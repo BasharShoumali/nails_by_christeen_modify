@@ -1,0 +1,120 @@
+/* ========================================
+   GLOBAL THEME VARIABLES
+   ======================================== */
+:root {
+  --brand-bg: #eecfc6; /* soft pink background */
+  --brand-text: #2b2b2b; /* charcoal text */
+  --brand-accent: #dc3545; /* red accent */
+  --card-bg: #ffffffcc; /* semi-white for cards */
+  --card-hover: #f6d6cd; /* hover pink */
+  --shadow: rgba(0, 0, 0, 0.1);
+  --radius: 10px;
+  --spacing: 12px;
+  --font-main: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* ========================================
+   BASE STYLES
+   ======================================== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  background-color: var(--brand-bg);
+  color: var(--brand-text);
+  font-family: var(--font-main);
+  line-height: 1.6;
+  min-width: 320px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ========================================
+   STICKY FOOTER LAYOUT
+   ======================================== */
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+/* ========================================
+   LINKS & BUTTONS
+   ======================================== */
+a {
+  color: var(--brand-text);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: var(--brand-accent);
+}
+
+button {
+  border: none;
+  border-radius: var(--radius);
+  padding: 0.6em 1.2em;
+  background-color: var(--brand-accent);
+  color: #fff;
+  font-family: inherit;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+button:hover {
+  background-color: #b92a37;
+  transform: translateY(-1px);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+/* ========================================
+   HEADINGS
+   ======================================== */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 600;
+  color: var(--brand-text);
+  margin-bottom: var(--spacing);
+  line-height: 1.2;
+}
+
+/* ========================================
+   UTILITIES
+   ======================================== */
+.container {
+  width: min(90%, 1200px);
+  margin: 0 auto;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.shadow {
+  box-shadow: 0 4px 12px var(--shadow);
+}

@@ -1,0 +1,82 @@
+.popupOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+}
+
+.popupCard {
+  background: #2b2b2b; /* dark charcoal */
+  color: var(--brand-bg); /* soft pink text */
+  padding: 1.8rem 2rem;
+  border-radius: var(--radius);
+  box-shadow: 0 8px 24px var(--shadow);
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+  animation: slideUp 0.4s ease;
+}
+
+.popupTitle {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.popupMsg {
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.popupBtn {
+  background: var(--brand-accent);
+  border: none;
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.25s ease, transform 0.25s ease;
+}
+
+.popupBtn:hover {
+  background: #b92a37;
+  transform: translateY(-2px);
+}
+
+/* === Animations === */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Type-based color accents */
+.success {
+  border-top: 4px solid #28a745;
+}
+
+.error {
+  border-top: 4px solid #dc3545;
+}
+
+.info {
+  border-top: 4px solid #17a2b8;
+}
