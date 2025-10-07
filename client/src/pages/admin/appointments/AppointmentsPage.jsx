@@ -124,89 +124,89 @@ export default function AppointmentsPage() {
 
       {error && <p className={styles.error}>⚠️ {error}</p>}
       {loading && <p className={styles.loading}>Loading appointments...</p>}
-
-      <table className={styles.table}>
-        <thead>
-          <tr>
-            <th>Time</th>
-            <th>Username</th>
-            <th>Phone</th>
-            <th>Status</th>
-            <th>Notes</th>
-            <th>Inspo</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {appointments.length === 0 ? (
+      <div className={styles.tableWrapper}>
+        <table className={styles.table}>
+          <thead>
             <tr>
-              <td colSpan="7" className={styles.noData}>
-                No appointments found for this date.
-              </td>
+              <th>Time</th>
+              <th>Username</th>
+              <th>Phone</th>
+              <th>Status</th>
+              <th>Notes</th>
+              <th>Inspo</th>
+              <th>Actions</th>
             </tr>
-          ) : (
-            appointments.map((a) => (
-              <tr key={a.id}>
-                <td>{a.slot}</td>
-                <td>{a.username}</td>
-                <td>{a.phone_raw || "-"}</td>
-                <td>
-                  <span
-                    className={`${styles.statusBadge} ${
-                      a.status === "open"
-                        ? styles.statusOpen
-                        : a.status === "closed"
-                        ? styles.statusClosed
-                        : styles.statusCanceled
-                    }`}
-                  >
-                    {a.status}
-                  </span>
-
-                  {a.status === "closed" && a.amount_paid != null && (
-                    <div className={styles.paidBox}>
-                      Paid: ₪{Number(a.amount_paid).toFixed(2)}
-                    </div>
-                  )}
-                </td>
-                <td>{a.notes || "-"}</td>
-                <td>
-                  {a.inspo_img ? (
-                    <img
-                      src={a.inspo_img}
-                      alt="Inspo"
-                      className={styles.inspoImg}
-                    />
-                  ) : (
-                    "-"
-                  )}
-                </td>
-                <td>
-                  {a.status === "open" ? (
-                    <>
-                      <button
-                        onClick={() => handleClose(a)}
-                        className={styles.closeBtn}
-                      >
-                        Close
-                      </button>
-                      <button
-                        onClick={() => handleCancelClick(a)}
-                        className={styles.cancelBtn}
-                      >
-                        Cancel
-                      </button>
-                    </>
-                  ) : (
-                    <span className={styles.statusDone}>✔ {a.status}</span>
-                  )}
+          </thead>
+          <tbody>
+            {appointments.length === 0 ? (
+              <tr>
+                <td colSpan="7" className={styles.noData}>
+                  No appointments found for this date.
                 </td>
               </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+            ) : (
+              appointments.map((a) => (
+                <tr key={a.id}>
+                  <td>{a.slot}</td>
+                  <td>{a.username}</td>
+                  <td>{a.phone_raw || "-"}</td>
+                  <td>
+                    <span
+                      className={`${styles.statusBadge} ${
+                        a.status === "open"
+                          ? styles.statusOpen
+                          : a.status === "closed"
+                          ? styles.statusClosed
+                          : styles.statusCanceled
+                      }`}
+                    >
+                      {a.status}
+                    </span>
 
+                    {a.status === "closed" && a.amount_paid != null && (
+                      <div className={styles.paidBox}>
+                        Paid: ₪{Number(a.amount_paid).toFixed(2)}
+                      </div>
+                    )}
+                  </td>
+                  <td>{a.notes || "-"}</td>
+                  <td>
+                    {a.inspo_img ? (
+                      <img
+                        src={a.inspo_img}
+                        alt="Inspo"
+                        className={styles.inspoImg}
+                      />
+                    ) : (
+                      "-"
+                    )}
+                  </td>
+                  <td>
+                    {a.status === "open" ? (
+                      <>
+                        <button
+                          onClick={() => handleClose(a)}
+                          className={styles.closeBtn}
+                        >
+                          Close
+                        </button>
+                        <button
+                          onClick={() => handleCancelClick(a)}
+                          className={styles.cancelBtn}
+                        >
+                          Cancel
+                        </button>
+                      </>
+                    ) : (
+                      <span className={styles.statusDone}>✔ {a.status}</span>
+                    )}
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
       {/* Close modal */}
       {showModal && (
         <CloseAppointmentModal

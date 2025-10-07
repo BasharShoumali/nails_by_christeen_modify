@@ -58,7 +58,12 @@ export async function createAppointment(req, res) {
       [user_id, work_date, slot, notes || null]
     );
 
-    res.status(201).json({ id: result.insertId });
+    const [[created]] = await pool.query(
+      `SELECT * FROM appointments WHERE id = ?`,
+      [result.insertId]
+    );
+
+    res.status(201).json(created);
   } catch (err) {
     console.error("❌ Error creating appointment:", err);
     res.status(500).json({ error: "Internal Server Error" });
@@ -86,7 +91,12 @@ export async function updateAppointment(req, res) {
     if (result.affectedRows === 0)
       return res.status(404).json({ error: "Appointment not found" });
 
-    res.json({ message: "Updated successfully" });
+    const [[updated]] = await pool.query(
+      `SELECT * FROM appointments WHERE id = ?`,
+      [id]
+    );
+
+    res.json({ message: "Updated successfully", appointment: updated });
   } catch (err) {
     console.error("❌ Error updating appointment:", err);
     res.status(500).json({ error: "Internal Server Error" });
@@ -122,7 +132,8 @@ export async function closeAppointment(req, res) {
     const { id } = req.params;
     const { amount_paid } = req.body;
 
-    if (!amount_paid || isNaN(amount_paid)) {
+    // Allow 0, reject null or non-numeric
+    if (amount_paid == null || isNaN(amount_paid)) {
       return res
         .status(400)
         .json({ error: "Amount is required and must be numeric" });
@@ -140,7 +151,15 @@ export async function closeAppointment(req, res) {
         .status(404)
         .json({ error: "Appointment not found or already closed" });
 
-    res.json({ message: "Appointment closed successfully" });
+    const [[updated]] = await pool.query(
+      `SELECT * FROM appointments WHERE id = ?`,
+      [id]
+    );
+
+    res.json({
+      message: "Appointment closed successfully",
+      appointment: updated,
+    });
   } catch (err) {
     console.error("❌ Error closing appointment:", err);
     res.status(500).json({ error: "Internal server error" });
@@ -167,7 +186,15 @@ export async function cancelAppointment(req, res) {
         .status(404)
         .json({ error: "Appointment not found or already closed/canceled" });
 
-    res.json({ message: "Appointment canceled successfully" });
+    const [[updated]] = await pool.query(
+      `SELECT * FROM appointments WHERE id = ?`,
+      [id]
+    );
+
+    res.json({
+      message: "Appointment canceled successfully",
+      appointment: updated,
+    });
   } catch (err) {
     console.error("❌ Error canceling appointment:", err);
     res.status(500).json({ error: "Internal server error" });

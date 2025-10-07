@@ -12,8 +12,6 @@ export async function getReports(req, res) {
         .slice(0, 7);
     const toMonth = to || new Date().toISOString().slice(0, 7);
 
-    console.log("📊 Reports range:", fromMonth, "→", toMonth);
-
     // 1️⃣ Appointments by Status
     const [appointments] = await pool.query(
       `
@@ -31,7 +29,6 @@ export async function getReports(req, res) {
       `,
       [fromMonth, toMonth]
     );
-    console.log("📆 appointments:", appointments);
 
     // 2️⃣ Monthly Revenue
     const [revenue] = await pool.query(
@@ -48,7 +45,6 @@ export async function getReports(req, res) {
       `,
       [fromMonth, toMonth]
     );
-    console.log("💰 revenue:", revenue);
 
     // 3️⃣ New Users
     const [users] = await pool.query(
@@ -64,7 +60,6 @@ export async function getReports(req, res) {
       `,
       [fromMonth, toMonth]
     );
-    console.log("👥 users:", users);
 
     // 4️⃣ Weekday Distribution
     const [weekdayDistribution] = await pool.query(`
@@ -76,7 +71,6 @@ export async function getReports(req, res) {
       GROUP BY weekday
       ORDER BY FIELD(weekday, 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday');
     `);
-    console.log("📅 weekdayDistribution:", weekdayDistribution);
 
     // ✅ Return everything
     res.json({

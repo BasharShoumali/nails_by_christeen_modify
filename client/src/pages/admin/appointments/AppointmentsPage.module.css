@@ -330,3 +330,20 @@
   font-weight: 600;
   color: var(--brand-text);
 }
+/* ========== Responsive Table Wrapper ========== */
+.tableWrapper {
+  width: 100%;
+  overflow-x: auto; /* allow horizontal scroll only inside table area */
+  -webkit-overflow-scrolling: touch;
+  border-radius: var(--radius);
+  box-shadow: 0 2px 8px var(--shadow);
+}
+
+/* Make scrollbar subtle */
+.tableWrapper::-webkit-scrollbar {
+  height: 8px;
+}
+.tableWrapper::-webkit-scrollbar-thumb {
+  background: color-mix(in oklab, var(--brand-accent) 40%, transparent);
+  border-radius: 10px;
+}

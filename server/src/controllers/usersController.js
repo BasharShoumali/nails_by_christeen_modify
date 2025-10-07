@@ -7,7 +7,7 @@ import bcrypt from "bcrypt";
 export async function getUsers(req, res) {
   try {
     const [rows] = await pool.query(
-      `SELECT id, first_name, last_name, username, phone_e164, userRole, created_at
+      `SELECT id, first_name, last_name, username, phone_raw, userRole, created_at
        FROM users
        ORDER BY created_at DESC`
     );
@@ -25,7 +25,7 @@ export async function getUser(req, res) {
   try {
     const userId = req.params.id;
     const [rows] = await pool.query(
-      `SELECT id, first_name, last_name, username, phone_e164, userRole, created_at
+      `SELECT id, first_name, last_name, username, phone_raw, userRole, created_at
        FROM users
        WHERE id = ?`,
       [userId]
@@ -141,5 +141,35 @@ export async function deleteUser(req, res) {
   } catch (err) {
     console.error("❌ Error deleting user:", err);
     res.status(500).json({ error: "Failed to delete user" });
+  }
+}
+
+/** ========================
+ *  GET USER APPOINTMENTS
+ *  ======================== */
+export async function getUserAppointments(req, res) {
+  try {
+    const userId = req.params.id;
+    const [rows] = await pool.query(
+      `
+      SELECT
+        a.id,
+        a.user_id,
+        a.status,
+        a.notes,
+        a.amount_paid,
+        a.slot,
+        DATE_FORMAT(a.work_date, '%Y-%m-%d') AS work_date,  -- 👈
+        DATE_FORMAT(a.created_at, '%Y-%m-%d') AS created_at -- 👈
+      FROM appointments a
+      WHERE a.user_id = ?
+      ORDER BY a.work_date DESC, a.slot ASC
+      `,
+      [userId]
+    );
+    res.json(rows);
+  } catch (err) {
+    console.error("❌ Error fetching user's appointments:", err);
+    res.status(500).json({ error: "Failed to fetch user's appointments" });
   }
 }

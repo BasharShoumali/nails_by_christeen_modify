@@ -1,0 +1,154 @@
+/* ===== POPUP OVERLAY (Clickable Outside Area) ===== */
+.popupOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: fadeIn 0.3s ease forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ===== POPUP CARD (Modal Window) ===== */
+.popupCard {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  box-shadow: 0 6px 20px var(--shadow);
+  padding: 24px;
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+  color: var(--brand-text); /* ✅ main text color */
+  animation: slideUp 0.3s ease forwards;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===== Titles & Text ===== */
+.popupCard h2 {
+  margin-bottom: 1rem;
+  color: var(--brand-accent);
+  font-size: 1.3rem;
+}
+
+.popupCard p,
+.popupCard label {
+  color: var(--brand-text); /* ✅ ensure dark text */
+  line-height: 1.5;
+}
+
+.popupCard strong {
+  color: var(--brand-accent);
+}
+
+/* ===== Input Fields ===== */
+.popupInput {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: var(--radius);
+  border: 1.5px solid var(--brand-accent);
+  font-size: 1rem;
+  background: var(--card-bg);
+  color: var(--brand-text); /* ✅ dark text */
+  transition: all 0.25s ease;
+}
+
+.popupInput::placeholder {
+  color: color-mix(in srgb, var(--brand-text) 60%, transparent);
+}
+
+.popupInput:focus {
+  outline: none;
+  border-color: var(--brand-accent);
+  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.15);
+}
+
+/* ===== Error Message ===== */
+.errorMsg {
+  color: var(--brand-accent);
+  font-size: 0.9rem;
+  margin: 4px 0 0;
+  text-align: left;
+}
+
+/* ===== Actions ===== */
+.popupActions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 12px;
+  gap: 10px;
+}
+
+.confirmBtn {
+  background: var(--brand-accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  padding: 8px 16px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.25s ease;
+}
+
+.confirmBtn:hover {
+  background: #c82333;
+}
+
+.cancelBtn {
+  background: transparent;
+  border: 1.5px solid var(--brand-text);
+  color: var(--brand-text);
+  border-radius: var(--radius);
+  padding: 8px 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.cancelBtn:hover {
+  background: var(--card-hover);
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 480px) {
+  .popupCard {
+    padding: 18px;
+    max-width: 90%;
+  }
+
+  .popupCard h2 {
+    font-size: 1.1rem;
+  }
+
+  .popupInput {
+    font-size: 0.95rem;
+  }
+
+  .confirmBtn,
+  .cancelBtn {
+    font-size: 0.9rem;
+    padding: 7px 12px;
+  }
+}
