@@ -80,3 +80,18 @@
 .info {
   border-top: 4px solid #17a2b8;
 }
+/* Optional fade-out effect */
+.fadeOut {
+  animation: fadeOut 0.3s ease forwards;
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}

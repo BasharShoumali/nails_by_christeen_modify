@@ -1,9 +1,10 @@
 import { Routes, Route } from "react-router-dom";
-import Navbar from "./components/Navbar/Navbar";
+import Navbar from "./components/navbar/Navbar";
 import Footer from "./components/Footer/Footer";
 import Login from "./pages/auth/login/Login";
 import Signup from "./pages/auth/signup/Signup";
-
+import PageNotFound from "./pages/auth/pageNotFound/PageNotFound";
+import SchedulePage from "./pages/admin/schedule/SchedulePage";
 import "./index.css";
 
 function App() {
@@ -14,7 +15,8 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-
+          <Route path="*" element={<PageNotFound />} />
+          <Route path="/admin/schedule" element={<SchedulePage />} />
           <Route
             path="/"
             element={

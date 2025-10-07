@@ -1,0 +1,467 @@
+/* ========== BASE PAGE ========== */
+.page {
+  padding: 2rem;
+  background: var(--brand-bg); /* soft pink background */
+  min-height: calc(100vh - 120px);
+  font-family: var(--font-main);
+  color: var(--brand-text);
+}
+
+/* === HEADERS === */
+.title {
+  font-size: 2rem;
+  color: var(--brand-text);
+  margin-bottom: 0.25rem;
+  text-align: center;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.subtitle {
+  text-align: center;
+  color: var(--brand-text);
+  opacity: 0.85;
+  margin-bottom: 2rem;
+  font-weight: 500;
+}
+
+/* ========== CARD CONTAINER ========== */
+.card {
+  background: var(--brand-text); /* dark charcoal box */
+  color: var(--brand-bg); /* soft pink text */
+  padding: 1.5rem;
+  border-radius: var(--radius);
+  box-shadow: 0 6px 20px var(--shadow);
+  margin-bottom: 2rem;
+  animation: fadeIn 0.5s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+}
+.card h2 {
+  color: var(--brand-bg);
+  margin-bottom: 0.5rem;
+  font-size: 1.4rem;
+}
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+/* ========== TEXT HELPERS ========== */
+.helper {
+  color: var(--card-hover);
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+/* ========== LAYOUT ========== */
+.row {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+/* ========== INPUTS ========== */
+.input {
+  flex: 1;
+  padding: 0.6rem 1rem;
+  border-radius: var(--radius);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--brand-bg);
+  font-size: 1rem;
+}
+.input::placeholder {
+  color: #f6d6cd;
+}
+.input:focus {
+  outline: 2px solid var(--brand-accent);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* ========== BUTTONS ========== */
+.btn {
+  background: var(--brand-accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  padding: 0.6rem 1.2rem;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.25s ease, transform 0.2s ease;
+}
+.btn:hover {
+  background: #b92a37;
+  transform: translateY(-2px);
+}
+
+.btnSmall {
+  padding: 0.25rem 0.6rem;
+  font-size: 0.85rem;
+  margin-top: 0.4rem;
+}
+
+/* Delete Button */
+.deleteBtn {
+  background: transparent;
+  border: 1px solid var(--brand-accent);
+  color: var(--brand-accent);
+  border-radius: var(--radius);
+  padding: 0.35rem 0.75rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+.deleteBtn:hover {
+  background: var(--brand-accent);
+  color: #fff;
+  transform: scale(1.05);
+}
+
+/* Toggle Button */
+.toggleBtn {
+  background: var(--brand-accent);
+  border: none;
+  color: #fff;
+  border-radius: var(--radius);
+  padding: 0.4rem 1rem;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.3s;
+}
+.toggleBtn:hover {
+  background: #b02a37;
+}
+
+/* ========== ANIMATION ========== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ========== DAY TEMPLATE INFO ========== */
+.templateInfo {
+  margin-top: 0.8rem;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius);
+  padding: 0.8rem 1rem;
+  color: var(--brand-bg);
+  text-align: left;
+  box-shadow: 0 2px 6px var(--shadow);
+}
+.templateInfo h3 {
+  color: var(--brand-accent);
+  font-size: 1.2rem;
+  margin: 0 0 0.4rem 0;
+}
+.templateInfo p {
+  font-size: 0.95rem;
+  margin: 0;
+  opacity: 0.9;
+}
+.noteLabel {
+  color: var(--brand-accent);
+  font-weight: 600;
+}
+
+/* ========== WEEKLY PLANNER ========== */
+.weekForm {
+  margin-bottom: 1.5rem;
+  background: rgba(43, 43, 43, 0.9);
+  padding: 1rem;
+  border-radius: var(--radius);
+  box-shadow: 0 0 10px var(--shadow);
+  color: var(--brand-bg);
+}
+.weekForm h3,
+.weekForm h4 {
+  color: var(--brand-bg);
+}
+.weekForm select,
+.weekForm input {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--brand-bg);
+}
+.weekForm select:focus,
+.weekForm input:focus {
+  outline: 2px solid var(--brand-accent);
+}
+
+/* === WEEK GRID === */
+.weekGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+/* === DAY CARDS === */
+.dayCard {
+  background: #2b2b2b;
+  color: var(--brand-bg);
+  border: 1px solid var(--brand-accent);
+  border-radius: var(--radius);
+  padding: 1rem;
+  box-shadow: 0 2px 10px var(--shadow);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border 0.25s ease;
+}
+.dayCard:hover {
+  transform: translateY(-4px);
+  border-color: var(--brand-accent);
+  box-shadow: 0 4px 15px var(--shadow);
+}
+.dayCard h3,
+.dayCard h4 {
+  text-align: center;
+  color: var(--brand-accent);
+  margin-bottom: 0.5rem;
+}
+
+/* === ASSIGNMENT ITEMS === */
+.assignmentItem {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius);
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  transition: all 0.25s ease;
+  cursor: pointer;
+}
+.assignmentItem:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+.assignmentItem strong {
+  color: var(--brand-accent);
+}
+.note {
+  color: var(--brand-bg);
+  font-size: 0.9rem;
+}
+.empty {
+  opacity: 0.7;
+  text-align: center;
+  font-style: italic;
+}
+
+/* Action buttons row */
+.actionRow {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.3rem;
+}
+
+/* Responsive */
+@media (max-width: 700px) {
+  .weekGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ========== MODAL (PLAN DETAIL) ========== */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+.modalCard {
+  background: var(--brand-text);
+  color: var(--brand-bg);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  width: min(400px, 90%);
+  box-shadow: 0 0 20px var(--shadow);
+  animation: popIn 0.3s ease;
+  text-align: left;
+}
+.modalCard h3 {
+  color: var(--brand-accent);
+  margin-bottom: 0.6rem;
+}
+.modalCard p {
+  margin-bottom: 0.4rem;
+  font-size: 0.95rem;
+}
+@keyframes popIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* ========== WEEK TEMPLATE VIEW ========== */
+.weekList {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.5rem;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.weekTemplateCard {
+  background: var(--card-bg);
+  color: var(--brand-text);
+  border-radius: var(--radius);
+  box-shadow: 0 2px 6px var(--shadow);
+  padding: 1rem;
+  max-width: 380px;
+  margin: 0 auto;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.weekTemplateCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px var(--shadow);
+}
+
+.weekTitle {
+  color: var(--brand-accent);
+  margin-bottom: 8px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+/* ========== TABLE INSIDE WEEK CARD ========== */
+.weekTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: #fff;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 2px 6px var(--shadow);
+}
+
+.weekTable th,
+.weekTable td {
+  padding: 6px 10px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+.weekTable th {
+  background: var(--brand-accent);
+  color: #fff;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.5px;
+}
+
+.weekTable td:first-child {
+  color: #222; /* darker day name text */
+  font-weight: 600;
+}
+
+.weekTable td:nth-child(2) {
+  color: var(--brand-accent); /* plan name in pink/red accent */
+}
+
+.weekTable tr:last-child td {
+  border-bottom: none;
+}
+
+.actionRow {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 0.6rem;
+}
+.dateCell {
+  color: var(--brand-text);
+  font-weight: 600;
+  opacity: 0.9;
+}
+/* Limit table height with scroll */
+.scrollTableWrapper {
+  max-height: 420px; /* roughly 10 rows */
+  overflow-y: auto;
+  border-radius: var(--radius);
+  box-shadow: 0 2px 8px var(--shadow);
+}
+
+/* Make scroll look nice */
+.scrollTableWrapper::-webkit-scrollbar {
+  width: 8px;
+}
+.scrollTableWrapper::-webkit-scrollbar-thumb {
+  background: var(--brand-accent);
+  border-radius: 10px;
+}
+.scrollTableWrapper::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Dark date text */
+.dateCell {
+  color: #222;
+  font-weight: 600;
+}
+.scrollTableWrapper {
+  max-height: 420px;
+  overflow-y: auto;
+  border-radius: var(--radius);
+  box-shadow: 0 2px 8px var(--shadow);
+}
+.react-datepicker-wrapper {
+  width: 100%;
+}
+
+.react-datepicker__input-container input {
+  background: var(--card-bg);
+  border: 1px solid var(--brand-accent);
+  color: var(--brand-text);
+  font-family: var(--font-main);
+  border-radius: var(--radius);
+  padding: 8px 10px;
+  width: 100%;
+  cursor: pointer;
+  box-shadow: 0 2px 4px var(--shadow);
+}
+
+.react-datepicker__input-container input:focus {
+  outline: 2px solid var(--brand-accent);
+}
+
+.react-datepicker {
+  background: var(--card-bg);
+  border: 1px solid var(--brand-accent);
+  box-shadow: 0 4px 12px var(--shadow);
+  border-radius: var(--radius);
+  font-family: var(--font-main);
+}
+
+.react-datepicker__header {
+  background: var(--brand-bg);
+  border-bottom: 1px solid var(--brand-accent);
+}
+
+.react-datepicker__day--selected,
+.react-datepicker__day--keyboard-selected {
+  background: var(--brand-accent);
+  color: #fff;
+}
+
+.react-datepicker__day:hover {
+  background: var(--card-hover);
+}
