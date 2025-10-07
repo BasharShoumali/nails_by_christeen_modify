@@ -465,3 +465,13 @@
 .react-datepicker__day:hover {
   background: var(--card-hover);
 }
+
+/* Make notes readable */
+.weekTable td:nth-child(4) {
+  color: var(--brand-text);
+  font-weight: 500;
+  white-space: normal;
+  word-break: break-word;
+  max-width: 300px; /* adjust as needed */
+}
+
