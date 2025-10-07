@@ -6,7 +6,7 @@ import Signup from "./pages/auth/signup/Signup";
 import PageNotFound from "./pages/auth/pageNotFound/PageNotFound";
 import SchedulePage from "./pages/admin/schedule/SchedulePage";
 import AdminsAppointmentsPage from "./pages/admin/appointments/AppointmentsPage";
-
+import AdminsReportsPage from "./pages/admin/reports/ReportsPage";
 import "./index.css";
 
 function App() {
@@ -23,6 +23,7 @@ function App() {
             path="/admin/appointments"
             element={<AdminsAppointmentsPage />}
           />
+          <Route path="/admin/reports" element={<AdminsReportsPage />}/>
           <Route
             path="/"
             element={

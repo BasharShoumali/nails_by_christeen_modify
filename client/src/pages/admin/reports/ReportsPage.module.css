@@ -1,0 +1,60 @@
+.page {
+  padding: 24px;
+  min-height: 100vh;
+  background: var(--brand-bg);
+  color: var(--brand-text);
+}
+
+.title {
+  text-align: center;
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+}
+
+.rangeControls {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.rangeControls label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 600;
+  color: var(--brand-text);
+}
+
+input[type="month"] {
+  padding: 8px 10px;
+  border-radius: var(--radius);
+  border: 1.5px solid var(--brand-accent);
+  background: var(--card-bg);
+  color: var(--brand-text);
+  font-size: 1rem;
+}
+
+.loading,
+.error {
+  text-align: center;
+  font-weight: bold;
+  margin-top: 20px;
+}
+
+.error {
+  color: var(--brand-accent);
+}
+.chartCard {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  box-shadow: 0 4px 12px var(--shadow);
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  transition: transform 0.2s ease;
+}
+
+.chartCard:hover {
+  transform: translateY(-3px);
+}

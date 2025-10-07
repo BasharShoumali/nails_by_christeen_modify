@@ -7,6 +7,7 @@ import authRouter from "./routes/auth.js";
 import usersRoutes from "./routes/users.js";
 import adminScheduleRoutes from "./routes/adminScheduleRoutes.js";
 import appointmentsRoutes from "./routes/appointmentsRoutes.js";
+import reportsRoute from "./routes/reportsRoutes.js"
 
 dotenv.config();
 const app = express();
@@ -17,6 +18,7 @@ app.use("/api", authRouter);
 app.use("/api/users", usersRoutes);
 app.use("/api/admin", adminScheduleRoutes);
 app.use("/api/admin/appointments", appointmentsRoutes);
+app.use("/api/admin", reportsRoute);
 
 app.get("/", (req, res) => res.send("✅ API running"));
 
