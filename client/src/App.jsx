@@ -5,6 +5,8 @@ import Login from "./pages/auth/login/Login";
 import Signup from "./pages/auth/signup/Signup";
 import PageNotFound from "./pages/auth/pageNotFound/PageNotFound";
 import SchedulePage from "./pages/admin/schedule/SchedulePage";
+import AdminsAppointmentsPage from "./pages/admin/appointments/AppointmentsPage";
+
 import "./index.css";
 
 function App() {
@@ -17,6 +19,10 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="*" element={<PageNotFound />} />
           <Route path="/admin/schedule" element={<SchedulePage />} />
+          <Route
+            path="/admin/appointments"
+            element={<AdminsAppointmentsPage />}
+          />
           <Route
             path="/"
             element={

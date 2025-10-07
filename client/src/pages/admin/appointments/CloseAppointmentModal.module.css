@@ -1,0 +1,115 @@
+/* ===== Overlay ===== */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+/* ===== Modal ===== */
+.modal {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  box-shadow: 0 4px 20px var(--shadow);
+  padding: 24px;
+  width: 90%;
+  max-width: 400px;
+  animation: popIn 0.3s ease;
+  color: var(--brand-text); /* ensure all base text is dark */
+}
+
+@keyframes popIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.modal h2 {
+  text-align: center;
+  margin-bottom: 1rem;
+  color: var(--brand-accent);
+}
+
+.modal form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ===== Input ===== */
+.modal label {
+  font-weight: 500;
+  color: var(--brand-text); /* darker label text */
+}
+
+.modal input {
+  padding: 10px;
+  border: 1.5px solid var(--brand-accent);
+  border-radius: var(--radius);
+  font-size: 1rem;
+  background: var(--card-bg);
+  color: var(--brand-text);
+  transition: all 0.25s ease;
+}
+
+.modal input::placeholder {
+  color: color-mix(in srgb, var(--brand-text) 60%, transparent);
+}
+
+.modal input:focus {
+  outline: none;
+  border-color: var(--brand-accent);
+  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.15);
+}
+
+/* ===== Actions ===== */
+.actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.confirmBtn {
+  background: var(--brand-accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+.confirmBtn:hover {
+  background: #c82333;
+}
+
+.cancelBtn {
+  background: transparent;
+  border: 1px solid var(--brand-text);
+  color: var(--brand-text);
+  border-radius: var(--radius);
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+.cancelBtn:hover {
+  background: var(--card-hover);
+}
+
+/* ===== Additional Polish ===== */
+.modal p {
+  color: var(--brand-text);
+}
+
+.modal strong {
+  color: var(--brand-accent);
+}
