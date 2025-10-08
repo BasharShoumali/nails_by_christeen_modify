@@ -1,0 +1,598 @@
+/* === 🌸 General Layout === */
+.page {
+  padding: 24px;
+  min-height: 100vh;
+  background: var(--brand-bg);
+  color: var(--brand-text);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+/* === 📋 Table Section === */
+.tableSection {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  box-shadow: 0 4px 10px var(--shadow);
+  padding: 16px;
+}
+
+.tableHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing);
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+/* === 🔍 Search Bar === */
+.searchWrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.searchInput {
+  padding: 8px 36px 8px 12px;
+  border-radius: var(--radius);
+  border: 1px solid #ccc;
+  font-size: 0.95rem;
+  background: color-mix(in srgb, var(--brand-bg, #eecfc6) 85%, #fff 15%);
+  color: var(--brand-text, #2b2b2b);
+  outline: none;
+  transition: border-color 0.2s ease, background 0.2s ease;
+  min-width: 220px;
+}
+.searchInput:focus {
+  border-color: var(--brand-accent, #dc3545);
+  background: color-mix(in srgb, var(--brand-bg, #eecfc6) 70%, #fff 30%);
+}
+
+.clearBtn {
+  position: absolute;
+  right: 8px;
+  background: none;
+  border: none;
+  color: var(--brand-accent, #dc3545);
+  font-size: 1.1rem;
+  cursor: pointer;
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
+  line-height: 1;
+}
+.clearBtn:hover {
+  opacity: 1;
+}
+
+/* === 🧭 Add / Low Stock Buttons === */
+.addBtn,
+.lowStockBtn {
+  background: var(--brand-accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  padding: 8px 16px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.3s ease;
+}
+
+.addBtn:hover,
+.lowStockBtn:hover {
+  background: #c82333;
+}
+
+.lowStockBtn {
+  background: #f6d6cd;
+  color: var(--brand-accent);
+  border: 1px solid var(--brand-accent);
+}
+.lowStockBtn:hover,
+.lowStockBtn.active {
+  background: var(--brand-accent);
+  color: #fff;
+}
+
+/* === 🧱 Table Styles === */
+/* === Scrollable table (no visible scrollbar) === */
+.tableWrapper {
+  overflow-x: auto;
+  overflow-y: scroll;
+  border-radius: var(--radius);
+  max-height: 520px; /* Limit visible rows (~10 items) */
+  position: relative;
+
+  /* Hide scrollbar visually but keep scroll functionality */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+.tableWrapper::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
+
+/* Scrollbar styling */
+.tableWrapper::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.tableWrapper::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--brand-accent) 60%, #000 20%);
+  border-radius: 4px;
+}
+.tableWrapper::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Table & Headers */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.table th,
+.table td {
+  padding: 10px;
+  border-bottom: 1px solid var(--shadow);
+  text-align: left;
+}
+.table thead th {
+  position: sticky;
+  top: 0;
+  background: var(--brand-accent);
+  color: #fff;
+  z-index: 2;
+}
+.table tr:hover {
+  background: var(--card-hover);
+}
+
+.noData {
+  text-align: center;
+  color: var(--muted);
+  padding: 12px;
+}
+
+.productImg {
+  width: 60px;
+  height: 60px;
+  border-radius: var(--radius);
+  object-fit: cover;
+}
+.noImg {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+.lowStockRow {
+  background: color-mix(in srgb, #dc3545 12%, white 88%);
+}
+
+/* === 🧩 Unified Action Buttons === */
+.actionBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 10px;
+  margin: 0 3px;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  color: #fff;
+  transition: all 0.25s ease;
+  min-width: 80px;
+}
+
+/* ✏️ Edit */
+.editBtn {
+  composes: actionBtn;
+  background: #007bff;
+}
+.editBtn:hover {
+  background: #0069d9;
+}
+
+/* 🔓 Open New */
+.openBtn {
+  composes: actionBtn;
+  background: #ffb400;
+  color: #2b2b2b;
+}
+.openBtn:hover {
+  background: #e0a200;
+  color: #000;
+}
+
+/* ➕ Add Qty */
+.addQtyBtn {
+  composes: actionBtn;
+  background: #1fa37c;
+}
+.addQtyBtn:hover {
+  background: #138f68;
+}
+
+/* 🗑️ Delete */
+.deleteBtn {
+  composes: actionBtn;
+  background: var(--brand-accent, #dc3545);
+}
+.deleteBtn:hover {
+  background: #b02a37;
+}
+
+/* === 🧾 Popup Styles === */
+.popupOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.popupCard {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  box-shadow: 0 6px 20px var(--shadow);
+  padding: 24px;
+  width: 360px;
+  text-align: center;
+  max-height: 90vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--brand-accent, #dc3545) transparent;
+}
+
+.popupTitle {
+  font-size: 1.4rem;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 20px;
+  color: var(--brand-text);
+}
+
+.popupInput {
+  width: 100%;
+  padding: 8px 10px;
+  margin: 10px 0;
+  border-radius: var(--radius);
+  border: 1.5px solid var(--brand-accent);
+  background: var(--brand-bg);
+  color: var(--brand-text);
+}
+
+.popupActions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.confirmBtn {
+  background: var(--brand-accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+.confirmBtn:hover {
+  background: #c82333;
+}
+
+.cancelBtn {
+  background: transparent;
+  border: 1.5px solid var(--brand-text);
+  color: var(--brand-text);
+  border-radius: var(--radius);
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.cancelBtn:hover {
+  background: var(--brand-text);
+  color: var(--brand-bg);
+}
+
+/* === 🖼️ Upload Section === */
+.uploadBox {
+  margin-top: 16px;
+  text-align: center;
+}
+
+.uploadLabel {
+  display: inline-block;
+  background: var(--brand-accent, #dc3545);
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.2s ease;
+}
+.uploadLabel:hover {
+  background: color-mix(in srgb, var(--brand-accent) 85%, #000);
+}
+
+.hiddenInput {
+  display: none;
+}
+
+.previewImg {
+  margin-top: 12px;
+  width: 100%;
+  max-width: 200px;
+  border-radius: var(--radius);
+  box-shadow: 0 2px 8px var(--shadow);
+  object-fit: cover;
+}
+
+/* === 🧠 Product Popup Form === */
+.productPopup {
+  background: var(--card-bg, #fff);
+  color: var(--brand-text, #2b2b2b);
+  box-shadow: 0 8px 25px var(--shadow);
+  border-radius: var(--radius);
+  max-width: 500px;
+  width: 100%;
+  padding: 28px;
+}
+
+.popupForm input,
+.popupForm select {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 0.95rem;
+  color: var(--brand-text, #2b2b2b);
+  background: color-mix(in srgb, var(--brand-bg, #eecfc6) 92%, #fff 8%);
+  border: 1px solid
+    color-mix(in srgb, var(--brand-accent, #dc3545) 10%, #000 5%);
+  border-radius: var(--radius);
+  transition: all 0.25s ease;
+}
+.popupForm input:focus,
+.popupForm select:focus {
+  outline: none;
+  border-color: var(--brand-accent, #dc3545);
+  background: color-mix(in srgb, var(--brand-bg, #eecfc6) 80%, #fff 20%);
+}
+
+.popupForm > *:not(:last-child) {
+  margin-bottom: calc(var(--spacing) * 1.5);
+}
+
+/* === Grid Layouts === */
+.grid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing);
+}
+.grid3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing);
+}
+
+/* === 🌐 Responsive Tweaks === */
+@media (max-width: 768px) {
+  .headerActions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .searchInput {
+    width: 100%;
+    min-width: unset;
+  }
+
+  .popupCard {
+    max-width: 95%;
+    padding: 20px;
+  }
+
+  .grid2,
+  .grid3 {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .popupForm input,
+  .popupForm select {
+    font-size: 1rem;
+    width: 100%;
+    padding: 12px 14px;
+  }
+
+  .popupOverlay {
+    align-items: flex-start;
+    padding-top: 40px;
+  }
+
+  .uploadLabel {
+    width: 100%;
+    text-align: center;
+    padding: 12px;
+  }
+
+  .previewImg {
+    max-width: 100%;
+    margin: 10px auto 0;
+  }
+}
+/* === 🛍️ Shopping Modal Enhancements === */
+/* === 🛍️ Shopping Modal Enhancements (Searchable Dropdown) === */
+.itemsWrapper {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.itemRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.itemName {
+  flex: 2;
+}
+
+.itemQty {
+  flex: 0.6;
+  max-width: 80px;
+  text-align: center;
+}
+
+.deleteInlineBtn {
+  background: var(--brand-accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 1rem;
+  padding: 6px 10px;
+  cursor: pointer;
+  transition: background 0.25s ease;
+}
+.deleteInlineBtn:hover {
+  background: #b02a37;
+}
+
+.dropdownWrapper {
+  position: relative;
+  flex: 2;
+}
+
+.popupInput[list] {
+  cursor: text;
+}
+/* 🧭 Custom searchable dropdown */
+.dropdownWrapper {
+  position: relative;
+  flex: 2;
+}
+
+.dropdownList {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--card-bg, #fff);
+  border: 1px solid var(--ring);
+  border-radius: var(--radius);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 50;
+  max-height: 180px;
+  overflow-y: auto;
+  margin-top: 2px;
+  scrollbar-width: none;
+}
+
+.dropdownItem {
+  padding: 8px 10px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  color: var(--brand-text);
+  transition: background 0.15s ease;
+}
+
+.dropdownItem:hover {
+  background: var(--card-hover);
+}
+
+.dropdownList::-webkit-scrollbar {
+  display: none;
+}
+/* === 🧾 Popup Overlay (Fixed for iPhone) === */
+.popupOverlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 9999;
+
+  /* 🧩 Fix iOS viewport height bug */
+  min-height: 100dvh;
+  padding: 20px;
+
+  /* prevent page behind from scrolling */
+  overflow: hidden;
+  overscroll-behavior: contain;
+}
+
+/* === 🪟 Popup Card (Scrollable inside) === */
+.popupCard {
+  background: var(--card-bg, #fff);
+  border-radius: var(--radius);
+  box-shadow: 0 6px 20px var(--shadow);
+  padding: 24px;
+  width: 90%;
+  max-width: 480px;
+  text-align: center;
+  color: var(--brand-text);
+
+  /* 🧭 Keep the popup centered and scrollable inside */
+  max-height: 85vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--brand-accent, #dc3545) transparent;
+
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+/* Hide scrollbars visually (still scrollable) */
+.popupCard::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+/* Title spacing fix for small screens */
+.popupTitle {
+  margin-bottom: 16px;
+  font-size: 1.3rem;
+}
+
+/* iPhone safe-area support */
+@supports (padding: max(0px)) {
+  .popupOverlay {
+    padding-bottom: max(20px, env(safe-area-inset-bottom));
+  }
+}
+
+/* Responsive: make sure popup stays centered */
+@media (max-width: 768px) {
+  .popupOverlay {
+    align-items: center;
+    padding: 24px 12px;
+  }
+}
+/* 🛍️ Shopping History highlight */
+.tableSection h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tableSection h2::before {
+  content: "🧾";
+  font-size: 1.2rem;
+}

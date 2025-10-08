@@ -8,6 +8,7 @@ import SchedulePage from "./pages/admin/schedule/SchedulePage";
 import AdminsAppointmentsPage from "./pages/admin/appointments/AppointmentsPage";
 import AdminsReportsPage from "./pages/admin/reports/ReportsPage";
 import AdminsUsersPage from "./pages/admin/users/UsersPage";
+import AdminsStocksPage from "./pages/admin/stock/StockPage";
 import "./index.css";
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="*" element={<PageNotFound />} />
+
           <Route path="/admin/schedule" element={<SchedulePage />} />
           <Route path="/admin/users" element={<AdminsUsersPage />} />
           <Route
@@ -26,6 +28,7 @@ function App() {
             element={<AdminsAppointmentsPage />}
           />
           <Route path="/admin/reports" element={<AdminsReportsPage />} />
+          <Route path="/admin/stocks" element={<AdminsStocksPage />} />
           <Route
             path="/"
             element={

@@ -8,7 +8,20 @@ const STATUS_COLORS = {
   canceled: "#dc3545",
 };
 
-export default function StatusChart({ data }) {
+export default function StatusChart({ data, user, appointments }) {
+  // --- Compute "since" month/year ---
+  const signupDate = user?.created_at ? new Date(user.created_at) : new Date();
+
+  // ✅ Format as "Sep 25"
+  const month = signupDate
+    .toLocaleString("default", { month: "short" })
+    .replace(".", ""); // remove dot if locale adds it
+  const year = String(signupDate.getFullYear()).slice(-2);
+  const since = `${month} ${year}`;
+
+  // --- Compute visit count ---
+  const visits = appointments?.filter((a) => a.status === "closed").length || 0;
+
   return (
     <div className={styles.chartCard}>
       <ResponsiveContainer width="100%" height={220}>
@@ -45,6 +58,17 @@ export default function StatusChart({ data }) {
             </span>
           </div>
         ))}
+      </div>
+
+      {/* === Extra Info === */}
+      <div className={styles.userInfo}>
+        <p>
+          👤 <strong>Since:</strong> {since}
+        </p>
+        <p>
+          🗓️ <strong>Visited:</strong> {visits}{" "}
+          {visits === 1 ? "time" : "times"}
+        </p>
       </div>
     </div>
   );

@@ -23,8 +23,8 @@ export default function AdminLinks({ onLinkClick }) {
         </Link>
       </li>
       <li>
-        <Link to="/admin/storage" onClick={onLinkClick}>
-          Storage
+        <Link to="/admin/stocks" onClick={onLinkClick}>
+          Stocks
         </Link>
       </li>
     </>

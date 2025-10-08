@@ -33,8 +33,13 @@ export default function CloseUserAppointmentModal({
   const handleSubmit = (e) => {
     e.preventDefault();
     const value = parseFloat(amount);
-    if (isNaN(value) || value <= 0) return;
-    onConfirm(value);
+    if (!Number.isFinite(value) || value <= 0) {
+      alert("Please enter a valid positive amount.");
+      return;
+    }
+
+    // ✅ ensure backend receives a number
+    onConfirm(Number(value));
   };
 
   return (

@@ -69,21 +69,30 @@ export default function UsersPage() {
   // ===== Close appointment =====
   const handleClose = async (id, amount) => {
     try {
-      const res = await fetch(`${ADMIN_API}/appointments/${id}/close`, {
+      const res = await fetch(`${API}/admin/appointments/${id}/close`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ amount_paid: amount }),
       });
 
+      const data = await res.json().catch(() => ({}));
+
       if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        console.error("❌ Failed to close:", err.error || res.statusText);
+        console.error("❌ Failed to close:", data.error || res.statusText);
+        alert("Failed to close appointment");
         return;
       }
 
+      console.log(
+        "✅ Appointment closed:",
+        data.message || "Updated successfully"
+      );
+
+      // ✅ Refresh the user’s appointments
       await fetchAppointments(selectedUser.id);
     } catch (err) {
       console.error("❌ Error closing appointment:", err);
+      alert("Something went wrong closing the appointment");
     }
   };
 

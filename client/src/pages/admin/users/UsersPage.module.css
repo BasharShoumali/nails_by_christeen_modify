@@ -375,3 +375,18 @@
   display: flex;
   justify-content: flex-end;
 }
+/* ===== User Info under Chart ===== */
+.userInfo {
+  margin-top: 14px;
+  text-align: center;
+  font-size: 0.95rem;
+  color: var(--brand-text);
+  background: color-mix(in oklab, var(--card-bg) 90%, var(--brand-accent) 10%);
+  border-radius: var(--radius);
+  padding: 8px 12px;
+  box-shadow: 0 2px 6px var(--shadow);
+  line-height: 1.6;
+}
+.userInfo strong {
+  color: var(--brand-accent);
+}

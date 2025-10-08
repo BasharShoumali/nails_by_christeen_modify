@@ -127,42 +127,62 @@ export async function deleteAppointment(req, res) {
  * PATCH /api/admin/appointments/:id/close
  * Closes an appointment and records the amount paid
  */
+// controllers/appointmentsController.js
 export async function closeAppointment(req, res) {
   try {
     const { id } = req.params;
     const { amount_paid } = req.body;
 
-    // Allow 0, reject null or non-numeric
-    if (amount_paid == null || isNaN(amount_paid)) {
-      return res
-        .status(400)
-        .json({ error: "Amount is required and must be numeric" });
+    if (!id || isNaN(amount_paid)) {
+      return res.status(400).json({ error: "Invalid appointment or amount" });
     }
 
-    const [result] = await pool.query(
-      `UPDATE appointments
-       SET status='closed', amount_paid=?, closed_at=NOW(), updated_at=NOW()
-       WHERE id=? AND status='open'`,
-      [amount_paid, id]
-    );
+    const conn = await pool.getConnection();
+    await conn.beginTransaction();
 
-    if (result.affectedRows === 0)
-      return res
-        .status(404)
-        .json({ error: "Appointment not found or already closed" });
-
-    const [[updated]] = await pool.query(
-      `SELECT * FROM appointments WHERE id = ?`,
+    // 1️⃣ Get appointment date
+    const [[appt]] = await conn.query(
+      `SELECT work_date FROM appointments WHERE id = ?`,
       [id]
     );
 
+    if (!appt) throw new Error("Appointment not found");
+
+    const workDate = new Date(appt.work_date);
+    const monthYear = `${workDate.getFullYear()}-${String(
+      workDate.getMonth() + 1
+    ).padStart(2, "0")}`;
+
+    // 2️⃣ Update appointment
+    const [result] = await conn.query(
+      `UPDATE appointments
+       SET status = 'closed',
+           amount_paid = ?,
+           closed_at = NOW()
+       WHERE id = ?`,
+      [amount_paid, id]
+    );
+
+    if (result.affectedRows === 0) throw new Error("Appointment not updated");
+
+    // 3️⃣ Insert/update monthly finance by appointment month
+    await conn.query(
+      `INSERT INTO monthly_finance (month_year, income)
+       VALUES (?, ?)
+       ON DUPLICATE KEY UPDATE income = income + VALUES(income)`,
+      [monthYear, amount_paid]
+    );
+
+    await conn.commit();
     res.json({
-      message: "Appointment closed successfully",
-      appointment: updated,
+      success: true,
+      message: `Appointment closed (recorded under ${monthYear})`,
     });
   } catch (err) {
     console.error("❌ Error closing appointment:", err);
-    res.status(500).json({ error: "Internal server error" });
+    res
+      .status(500)
+      .json({ error: err.message || "Failed to close appointment" });
   }
 }
 

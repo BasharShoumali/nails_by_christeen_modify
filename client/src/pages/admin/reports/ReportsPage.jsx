@@ -1,3 +1,4 @@
+// src/pages/admin/reports/ReportsPage.jsx
 import { useEffect, useState } from "react";
 import { subMonths, format } from "date-fns";
 import styles from "./ReportsPage.module.css";
@@ -24,8 +25,10 @@ export default function ReportsPage() {
       setLoading(true);
       const fromStr = format(range.from, "yyyy-MM");
       const toStr = format(range.to, "yyyy-MM");
+
       const res = await fetch(`${API}/reports?from=${fromStr}&to=${toStr}`);
       if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+
       const json = await res.json();
       setData(json);
     } catch (err) {
@@ -38,6 +41,7 @@ export default function ReportsPage() {
 
   useEffect(() => {
     fetchReports();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [range]);
 
   if (loading) return <p className={styles.loading}>Loading reports...</p>;
@@ -46,43 +50,50 @@ export default function ReportsPage() {
 
   return (
     <main className={styles.page}>
-  <h1 className={styles.title}>📊 Manager Reports</h1>
+      <h1 className={styles.title}>📊 Manager Reports</h1>
 
-  <div className={styles.rangeControls}>
-    <label>
-      From:
-      <input
-        type="month"
-        value={format(range.from, "yyyy-MM")}
-        onChange={(e) =>
-          setRange((r) => ({
-            ...r,
-            from: new Date(`${e.target.value}-01`),
-          }))
-        }
-      />
-    </label>
-    <label>
-      To:
-      <input
-        type="month"
-        value={format(range.to, "yyyy-MM")}
-        onChange={(e) =>
-          setRange((r) => ({ ...r, to: new Date(`${e.target.value}-01`) }))
-        }
-      />
-    </label>
-  </div>
+      {/* === Month Range Controls === */}
+      <div className={styles.rangeControls}>
+        <label>
+          From:
+          <input
+            type="month"
+            value={format(range.from, "yyyy-MM")}
+            onChange={(e) =>
+              setRange((r) => ({
+                ...r,
+                from: new Date(`${e.target.value}-01`),
+              }))
+            }
+          />
+        </label>
+        <label>
+          To:
+          <input
+            type="month"
+            value={format(range.to, "yyyy-MM")}
+            onChange={(e) =>
+              setRange((r) => ({
+                ...r,
+                to: new Date(`${e.target.value}-01`),
+              }))
+            }
+          />
+        </label>
+      </div>
 
-  <div className={styles.chartGrid}>
-    <AppointmentsChart data={data.monthly_appointments} />
-    <RevenueChart data={data.monthly_revenue} />
-    <NewUsersChart data={data.monthly_users} />
-    {data.weekday_distribution && (
-      <WeekdayChart data={data.weekday_distribution} />
-    )}
-  </div>
-</main>
-
+      {/* === Charts Grid === */}
+      <div className={styles.chartGrid}>
+        <AppointmentsChart data={data.monthly_appointments || []} />
+        <RevenueChart
+          data={data.finance || []}
+          currentFinance={data.current_finance || { income: 0, outcome: 0 }}
+        />
+        <NewUsersChart data={data.monthly_users || []} />
+        {data.weekday_distribution && (
+          <WeekdayChart data={data.weekday_distribution || []} />
+        )}
+      </div>
+    </main>
   );
 }

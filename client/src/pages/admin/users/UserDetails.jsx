@@ -31,7 +31,12 @@ export default function UserDetails({
 
       {/* === Chart + Table === */}
       <div className={styles.summaryGrid}>
-        <StatusChart data={statusData} />
+        <StatusChart
+          data={statusData}
+          user={user}
+          appointments={appointments}
+        />
+
         <AppointmentsTable
           appointments={appointments}
           loading={loading}

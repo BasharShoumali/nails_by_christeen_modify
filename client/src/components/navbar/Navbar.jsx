@@ -54,7 +54,7 @@ export default function Navbar() {
       if (location.pathname.startsWith("/admin")) {
         navigate("/");
       } else {
-        navigate("/admin");
+        navigate("/admin/appointments");
       }
     } else {
       navigate("/");
