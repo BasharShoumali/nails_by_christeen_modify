@@ -213,23 +213,35 @@ export async function saveOverride(req, res) {
 
 export async function deleteOverride(req, res) {
   try {
-    const { date } = req.params;
+    let { date } = req.params;
     if (!date) return res.status(400).json({ error: "Missing date parameter" });
+
+    // ✅ Parse any ISO string or date-like input safely
+    const d = new Date(date);
+    if (isNaN(d)) return res.status(400).json({ error: "Invalid date format" });
+
+    // ✅ Convert to local (Israel) date — not UTC
+    const localDate = new Date(d.getTime() + 3 * 60 * 60 * 1000)
+      .toISOString()
+      .split("T")[0];
 
     const [result] = await pool.query(
       "DELETE FROM date_overrides WHERE work_date = ?",
-      [date]
+      [localDate]
     );
 
     if (result.affectedRows === 0)
-      return res.status(404).json({ error: "Override not found" });
+      return res
+        .status(404)
+        .json({ error: `No override found for ${localDate}` });
 
-    res.json({ message: "Override deleted successfully" });
+    res.json({ message: `Override for ${localDate} deleted successfully` });
   } catch (err) {
     console.error("❌ deleteOverride error:", err);
     res.status(500).json({ error: "Failed to delete override" });
   }
 }
+
 /* ============================================================
    🗓️  WEEK TEMPLATES (Reusable 7-day week plans)
    ============================================================ */
@@ -413,5 +425,191 @@ export async function deleteWeekTemplate(req, res) {
   } catch (err) {
     console.error("❌ deleteWeekTemplate error:", err);
     res.status(500).json({ error: "Failed to delete week template" });
+  }
+}
+/* ============================================================
+   🕒  GET AVAILABLE SLOTS — COMPLETE LOGIC
+   ============================================================ */
+/* ============================================================
+   🕒  GET AVAILABLE SLOTS — INCLUDING NON-SCHEDULED APPOINTMENTS
+   ============================================================ */
+export async function getAvailableSlots(req, res) {
+  const { date } = req.query;
+  if (!date) return res.status(400).json({ error: "Missing ?date parameter" });
+
+  const conn = await pool.getConnection();
+  try {
+    const weekday = new Date(date).getDay(); // 0 = Sunday
+    let scheduleId = null;
+    let scheduleName = "";
+    let message = "";
+
+    /* ---------------------------
+       1️⃣ Check for date override
+    --------------------------- */
+    const [[override]] = await conn.query(
+      `SELECT is_open, override_schedule_id
+         FROM date_overrides
+        WHERE work_date = ?`,
+      [date]
+    );
+
+    if (override) {
+      if (override.is_open === 0) {
+        conn.release();
+        return res.json({
+          date,
+          slots: [],
+          message: "Day closed by override",
+        });
+      }
+      if (override.override_schedule_id) {
+        scheduleId = override.override_schedule_id;
+        message = "Using override schedule";
+      }
+    }
+
+    /* ---------------------------
+       2️⃣ Otherwise, find week assignment
+    --------------------------- */
+    if (!scheduleId) {
+      const [[weekAssign]] = await conn.query(
+        `SELECT wa.week_id, wt.days
+           FROM week_assignments wa
+           JOIN week_templates wt ON wt.id = wa.week_id
+          WHERE wa.date_from <= ?
+            AND (wa.date_to IS NULL OR wa.date_to >= ?)
+          ORDER BY wa.date_from DESC
+          LIMIT 1`,
+        [date, date]
+      );
+
+      if (!weekAssign) {
+        conn.release();
+        return res.json({
+          date,
+          slots: [],
+          message: "No week assignment found for this date",
+        });
+      }
+
+      // Parse the week template’s days mapping
+      let daysArray = [];
+      try {
+        const parsed = JSON.parse(weekAssign.days);
+        daysArray = Array.isArray(parsed)
+          ? parsed
+          : Object.values(parsed).map((s) => s);
+      } catch {
+        daysArray = String(weekAssign.days || "")
+          .split(",")
+          .map((s) => s.trim());
+      }
+
+      const dayTemplateName = daysArray[weekday] || null;
+      if (!dayTemplateName) {
+        conn.release();
+        return res.json({
+          date,
+          slots: [],
+          message: "No day template assigned for this weekday",
+        });
+      }
+
+      const [[scheduleRow]] = await conn.query(
+        `SELECT id, name FROM schedules WHERE name = ? LIMIT 1`,
+        [dayTemplateName]
+      );
+      if (!scheduleRow) {
+        conn.release();
+        return res.json({
+          date,
+          slots: [],
+          message: `Day template '${dayTemplateName}' not found`,
+        });
+      }
+
+      scheduleId = scheduleRow.id;
+      scheduleName = scheduleRow.name;
+      message = `Using week-assigned schedule (${scheduleName})`;
+    }
+
+    /* ---------------------------
+       3️⃣ Get base slots for that schedule
+    --------------------------- */
+    const [scheduleSlots] = await conn.query(
+      `SELECT start_time AS slot
+         FROM schedule_slots
+        WHERE schedule_id = ?
+        ORDER BY start_time`,
+      [scheduleId]
+    );
+
+    /* ---------------------------
+       4️⃣ Fetch all appointments of this date
+    --------------------------- */
+    const [appointments] = await conn.query(
+      `
+      SELECT a.slot, a.user_id, u.username
+        FROM appointments a
+        JOIN users u ON u.id = a.user_id
+       WHERE a.work_date = ?
+       ORDER BY a.slot
+      `,
+      [date]
+    );
+
+    // Map of scheduled slot -> username
+    const appointmentMap = {};
+    for (const appt of appointments) {
+      appointmentMap[appt.slot] = appt.username;
+    }
+
+    /* ---------------------------
+       5️⃣ Merge scheduled slots
+    --------------------------- */
+    const finalSlots = scheduleSlots.map((s) => {
+      const username = appointmentMap[s.slot] || null;
+      return {
+        slot: s.slot,
+        available: !username,
+        username,
+        type: "template-slot",
+      };
+    });
+
+    /* ---------------------------
+       6️⃣ Add any "extra" appointments that
+          don’t match the day template slots
+    --------------------------- */
+    const scheduledSlotsSet = new Set(scheduleSlots.map((s) => s.slot));
+    const extraAppointments = appointments
+      .filter((a) => !scheduledSlotsSet.has(a.slot))
+      .map((a) => ({
+        slot: a.slot,
+        available: false,
+        username: a.username,
+        type: "extra-appointment",
+      }));
+
+    const merged = [...finalSlots, ...extraAppointments].sort((a, b) =>
+      a.slot.localeCompare(b.slot)
+    );
+
+    /* ---------------------------
+       ✅ Done
+    --------------------------- */
+    res.json({
+      date,
+      schedule_id: scheduleId,
+      schedule_name: scheduleName,
+      message,
+      slots: merged,
+    });
+  } catch (err) {
+    console.error("❌ getAvailableSlots error:", err);
+    res.status(500).json({ error: "Failed to get available slots" });
+  } finally {
+    conn.release();
   }
 }

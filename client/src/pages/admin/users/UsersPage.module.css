@@ -390,3 +390,70 @@
 .userInfo strong {
   color: var(--brand-accent);
 }
+/* ===== Limit tables to 10 rows and hide scrollbar ===== */
+.tableWrapper,
+.appointmentsTable {
+  max-height: 420px; /* roughly 10 rows */
+  overflow-y: auto;
+  overflow-x: auto;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+.tableWrapper::-webkit-scrollbar,
+.appointmentsTable::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+/* ===== Responsive Layout Fix ===== */
+@media (max-width: 900px) {
+  .summaryGrid {
+    display: flex;
+    flex-direction: column; /* stack vertically */
+  }
+
+  .chartCard {
+    order: -1; /* ensure chart is on top */
+    margin-bottom: 16px;
+  }
+}
+.slot {
+  color: var(--brand-accent);
+  font-weight: 500;
+  margin-left: 6px;
+}
+
+.amountBox {
+  margin-top: 4px;
+  font-size: 0.8rem;
+  background: rgba(31, 163, 124, 0.08);
+  color: #1fa37c;
+  border-radius: 6px;
+  padding: 2px 8px;
+  display: inline-block;
+  border: 1px solid rgba(31, 163, 124, 0.25);
+  font-weight: 600;
+}
+
+.notesCell {
+  max-width: 220px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.imageCell {
+  text-align: center;
+}
+
+.inspoImg {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: var(--radius);
+  box-shadow: 0 0 6px var(--brand-accent);
+  transition: transform 0.2s ease;
+}
+
+.inspoImg:hover {
+  transform: scale(1.05);
+}

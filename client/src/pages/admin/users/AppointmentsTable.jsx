@@ -1,12 +1,11 @@
-// src/pages/admin/users/components/AppointmentsTable.jsx
 import { useState } from "react";
 import styles from "./UsersPage.module.css";
 import CloseUserAppointmentModal from "./CloseUserAppointmentModal";
 import CancelUserAppointmentModal from "./CancelUserAppointmentModal";
 
 export default function AppointmentsTable({
-  appointments,
-  loading,
+  appointments = [],
+  loading = false,
   onClose,
   onCancel,
 }) {
@@ -37,7 +36,6 @@ export default function AppointmentsTable({
 
   const formatDate = (dateString) => {
     if (!dateString) return "-";
-    // Remove timezone part if ISO (keep only YYYY-MM-DD)
     return dateString.includes("T")
       ? dateString.split("T")[0]
       : new Date(dateString).toLocaleDateString("en-GB");
@@ -52,13 +50,14 @@ export default function AppointmentsTable({
           <table className={styles.table}>
             <thead>
               <tr>
-                <th>Date Ordered</th>
-                <th>Date of Appointment</th>
+                <th>Date</th>
                 <th>Status</th>
-                <th>Paid</th>
+                <th>Notes</th>
+                <th>Inspo Image</th>
                 <th>Actions</th>
               </tr>
             </thead>
+
             <tbody>
               {appointments.length === 0 ? (
                 <tr>
@@ -67,44 +66,98 @@ export default function AppointmentsTable({
                   </td>
                 </tr>
               ) : (
-                appointments.map((a) => (
-                  <tr key={a.id}>
-                    <td>{formatDate(a.created_at)}</td>
-                    <td>
-                      {formatDate(a.work_date)}{" "}
-                      {a.slot && <span>{a.slot}</span>}
-                    </td>
-                    <td className={styles[a.status]}>{a.status}</td>
-                    <td>{a.amount_paid ? `₪${a.amount_paid}` : "-"}</td>
-                    <td>
-                      {a.status === "open" ? (
-                        <>
-                          <button
-                            onClick={() => openModal("close", a)}
-                            className={styles.closeBtn}
-                          >
-                            Close
-                          </button>
-                          <button
-                            onClick={() => openModal("cancel", a)}
-                            className={styles.cancelBtn}
-                          >
-                            Cancel
-                          </button>
-                        </>
-                      ) : (
-                        "-"
-                      )}
-                    </td>
-                  </tr>
-                ))
+                appointments.map((a) => {
+                  // ✅ ensure clean image URL
+                  const imgSrc =
+                    a.inspo_img && a.inspo_img.startsWith("http")
+                      ? a.inspo_img
+                      : a.inspo_img
+                      ? `${
+                          import.meta.env.VITE_API_BASE ||
+                          "http://localhost:4000"
+                        }/${a.inspo_img.replace(/^\/?/, "")}`
+                      : null;
+
+                  return (
+                    <tr key={a.id}>
+                      {/* 🗓 Date + Time */}
+                      <td>
+                        {formatDate(a.work_date)}{" "}
+                        {a.slot && (
+                          <span className={styles.slot}>{a.slot}</span>
+                        )}
+                      </td>
+
+                      {/* 🧾 Status */}
+                      <td className={styles[a.status]}>
+                        <span className={styles.statusText}>{a.status}</span>
+                        {a.status === "closed" && (
+                          <span className={styles.amountBox}>
+                            ₪{Number(a.amount_paid || 0).toFixed(2)}
+                          </span>
+                        )}
+                      </td>
+
+                      {/* 📝 Notes */}
+                      <td className={styles.notesCell}>
+                        {a.notes?.trim() ? a.notes : "—"}
+                      </td>
+
+                      {/* 🖼️ Inspo Image */}
+                      <td className={styles.imageCell}>
+                        {imgSrc ? (
+                          <img
+                            src={imgSrc}
+                            alt="Inspo"
+                            className={styles.inspoImg}
+                            onError={(e) => {
+                              e.currentTarget.src =
+                                "data:image/svg+xml;charset=UTF-8," +
+                                encodeURIComponent(
+                                  `<svg xmlns='http://www.w3.org/2000/svg' width='60' height='60'>
+                                  <rect width='100%' height='100%' fill='#ddd'/>
+                                  <text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle'
+                                  font-size='10' fill='#555'>No Img</text>
+                                  </svg>`
+                                );
+                            }}
+                          />
+                        ) : (
+                          "—"
+                        )}
+                      </td>
+
+                      {/* ⚙️ Actions */}
+                      <td>
+                        {a.status === "open" ? (
+                          <>
+                            <button
+                              onClick={() => openModal("close", a)}
+                              className={styles.closeBtn}
+                            >
+                              Close
+                            </button>
+                            <button
+                              onClick={() => openModal("cancel", a)}
+                              className={styles.cancelBtn}
+                            >
+                              Cancel
+                            </button>
+                          </>
+                        ) : (
+                          "-"
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })
               )}
             </tbody>
           </table>
         )}
       </div>
 
-      {/* === Modals === */}
+      {/* ✅ Close Modal */}
       {modalType === "close" && selectedAppointment && (
         <CloseUserAppointmentModal
           appointment={selectedAppointment}
@@ -113,6 +166,7 @@ export default function AppointmentsTable({
         />
       )}
 
+      {/* 🚫 Cancel Modal */}
       {modalType === "cancel" && selectedAppointment && (
         <CancelUserAppointmentModal
           appointment={selectedAppointment}

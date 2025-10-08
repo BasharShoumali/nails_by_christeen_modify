@@ -12,6 +12,10 @@ export default function DayTemplateManager({ schedules, onChanged }) {
   const [newSlot, setNewSlot] = useState("");
   const [selectedTemplate, setSelectedTemplate] = useState(null);
 
+  // local popup state
+  const [confirmVisible, setConfirmVisible] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+
   // === Load slots + selected template when editing ===
   useEffect(() => {
     if (mode === "edit" && selectedId) {
@@ -70,15 +74,23 @@ export default function DayTemplateManager({ schedules, onChanged }) {
   // === Delete whole template ===
   const handleDeleteTemplate = async () => {
     if (!selectedId) return;
-    if (!confirm("Are you sure you want to delete this template?")) return;
-
-    await fetch(`${API}/api/admin/schedules/${selectedId}`, {
-      method: "DELETE",
-    });
-    setSelectedId("");
-    setSelectedTemplate(null);
-    setSlots([]);
-    onChanged();
+    setIsDeleting(true);
+    try {
+      const res = await fetch(`${API}/api/admin/schedules/${selectedId}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) throw new Error("Failed to delete day template");
+      setSelectedId("");
+      setSelectedTemplate(null);
+      setSlots([]);
+      onChanged();
+    } catch (err) {
+      console.error("❌ handleDeleteTemplate error:", err);
+      alert("Failed to delete day template.");
+    } finally {
+      setIsDeleting(false);
+      setConfirmVisible(false);
+    }
   };
 
   // === Date formatter for created_at ===
@@ -156,7 +168,7 @@ export default function DayTemplateManager({ schedules, onChanged }) {
               </p>
               <button
                 className={`${styles.btn} ${styles.deleteBtn}`}
-                onClick={handleDeleteTemplate}
+                onClick={() => setConfirmVisible(true)}
               >
                 🗑 Delete Template
               </button>
@@ -210,6 +222,35 @@ export default function DayTemplateManager({ schedules, onChanged }) {
             </>
           )}
         </>
+      )}
+
+      {/* === Local confirmation popup === */}
+      {confirmVisible && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalCard}>
+            <h3>Confirm Delete</h3>
+            <p>
+              Are you sure you want to delete the day template{" "}
+              <strong>{selectedTemplate?.name}</strong>?
+            </p>
+            <div className={styles.modalActions}>
+              <button
+                className={styles.cancelBtn}
+                onClick={() => setConfirmVisible(false)}
+                disabled={isDeleting}
+              >
+                Cancel
+              </button>
+              <button
+                className={styles.confirmBtn}
+                onClick={handleDeleteTemplate}
+                disabled={isDeleting}
+              >
+                {isDeleting ? "Deleting..." : "Confirm"}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </section>
   );

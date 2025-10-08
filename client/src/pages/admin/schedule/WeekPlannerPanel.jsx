@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import styles from "./SchedulePage.module.css";
-import Popup from "../../../components/popup/Popup"; // ✅ adjust path if needed
+import Popup from "../../../components/popup/Popup";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -16,6 +16,14 @@ const WEEKDAYS = [
   "Saturday",
 ];
 
+/** 🕒 Local date converter — prevents 1-day shift */
+function toLocalDateString(date) {
+  if (!date) return "";
+  const offset = date.getTimezoneOffset(); // e.g. -180 for UTC+3
+  const local = new Date(date.getTime() - offset * 60 * 1000);
+  return local.toISOString().split("T")[0];
+}
+
 export default function WeekPlanner({ schedules }) {
   const [mode, setMode] = useState("view");
   const [weeks, setWeeks] = useState([]);
@@ -28,7 +36,6 @@ export default function WeekPlanner({ schedules }) {
     weekId: "",
   });
 
-  // ✅ Popup control
   const [popup, setPopup] = useState({
     show: false,
     title: "",
@@ -39,6 +46,7 @@ export default function WeekPlanner({ schedules }) {
 
   const showPopup = (title, message, type = "info", onConfirm = null) =>
     setPopup({ show: true, title, message, type, onConfirm });
+
   const closePopup = () =>
     setPopup({
       show: false,
@@ -67,7 +75,7 @@ export default function WeekPlanner({ schedules }) {
     return seven;
   };
 
-  /** === Delete week template (with popup confirm) === */
+  /** === Delete week template === */
   const handleDeleteWeek = (id) => {
     showPopup(
       "Confirm Delete",
@@ -230,6 +238,7 @@ export default function WeekPlanner({ schedules }) {
         </button>
       </div>
 
+      {/* === VIEW MODE === */}
       {mode === "view" && (
         <div className={styles.weekList}>
           {!weeks.length ? (
@@ -366,13 +375,15 @@ export default function WeekPlanner({ schedules }) {
         </p>
         <div className={styles.row}>
           <DatePicker
-            selected={assignments.dateFrom ? new Date(assignments.dateFrom) : null}
+            selected={
+              assignments.dateFrom ? new Date(assignments.dateFrom) : null
+            }
             onChange={(date) =>
-            setAssignments((a) => ({
-             ...a,
-            dateFrom: date ? date.toISOString().split("T")[0] : "",
-            }))
-           }
+              setAssignments((a) => ({
+                ...a,
+                dateFrom: toLocalDateString(date),
+              }))
+            }
             placeholderText="From date"
             className={styles.input}
             dateFormat="yyyy-MM-dd"
@@ -381,10 +392,10 @@ export default function WeekPlanner({ schedules }) {
           <DatePicker
             selected={assignments.dateTo ? new Date(assignments.dateTo) : null}
             onChange={(date) =>
-            setAssignments((a) => ({
-            ...a,
-            dateTo: date ? date.toISOString().split("T")[0] : "",
-            }))
+              setAssignments((a) => ({
+                ...a,
+                dateTo: toLocalDateString(date),
+              }))
             }
             placeholderText="To date"
             className={styles.input}
@@ -418,7 +429,7 @@ export default function WeekPlanner({ schedules }) {
           message={popup.message}
           type={popup.type}
           onClose={closePopup}
-          onConfirm={popup.onConfirm} // ✅ added this
+          onConfirm={popup.onConfirm}
         />
       )}
     </section>

@@ -4,6 +4,7 @@ import styles from "./UsersPage.module.css";
 import UsersTable from "./UsersTable.jsx";
 import UserDetails from "./UserDetails.jsx";
 import AddUserModal from "./AddUserModal.jsx";
+import AddAppointmentModal from "./AddAppointmentModal.jsx"; // ✅ new modal
 
 // ===== Base URLs =====
 const RAW_API = import.meta.env.VITE_API_BASE || "http://localhost:4000";
@@ -18,8 +19,11 @@ export default function UsersPage() {
   const [totalAmount, setTotalAmount] = useState(0);
   const [statusData, setStatusData] = useState([]);
   const [showAddUserModal, setShowAddUserModal] = useState(false);
+  const [showAddAppointmentModal, setShowAddAppointmentModal] = useState(false);
 
-  // ===== Fetch all users =====
+  /* ============================================================
+     FETCH USERS
+     ============================================================ */
   const fetchUsers = async () => {
     try {
       const res = await fetch(`${API}/users`);
@@ -31,7 +35,9 @@ export default function UsersPage() {
     }
   };
 
-  // ===== Fetch selected user's appointments =====
+  /* ============================================================
+     FETCH APPOINTMENTS
+     ============================================================ */
   const fetchAppointments = async (userId) => {
     setLoading(true);
     try {
@@ -41,13 +47,13 @@ export default function UsersPage() {
 
       setAppointments(data || []);
 
-      // compute total amount paid
+      // 💰 Compute total amount paid
       const total = data
         .filter((a) => a.status === "closed" && a.amount_paid)
         .reduce((sum, a) => sum + Number(a.amount_paid || 0), 0);
       setTotalAmount(total);
 
-      // compute chart data
+      // 🥧 Chart summary
       const summary = ["closed", "open", "canceled"].map((s) => ({
         name: s,
         value: data.filter((a) => a.status === s).length,
@@ -60,35 +66,33 @@ export default function UsersPage() {
     }
   };
 
-  // ===== Select user =====
+  /* ============================================================
+     SELECT USER
+     ============================================================ */
   const handleSelectUser = (u) => {
     setSelectedUser(u);
     fetchAppointments(u.id);
   };
 
-  // ===== Close appointment =====
+  /* ============================================================
+     CLOSE APPOINTMENT
+     ============================================================ */
   const handleClose = async (id, amount) => {
     try {
-      const res = await fetch(`${API}/admin/appointments/${id}/close`, {
+      const res = await fetch(`${ADMIN_API}/appointments/${id}/close`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ amount_paid: amount }),
       });
 
       const data = await res.json().catch(() => ({}));
-
       if (!res.ok) {
         console.error("❌ Failed to close:", data.error || res.statusText);
         alert("Failed to close appointment");
         return;
       }
 
-      console.log(
-        "✅ Appointment closed:",
-        data.message || "Updated successfully"
-      );
-
-      // ✅ Refresh the user’s appointments
+      console.log("✅ Appointment closed:", data.message);
       await fetchAppointments(selectedUser.id);
     } catch (err) {
       console.error("❌ Error closing appointment:", err);
@@ -96,31 +100,42 @@ export default function UsersPage() {
     }
   };
 
-  // ===== Cancel appointment =====
+  /* ============================================================
+     CANCEL APPOINTMENT
+     ============================================================ */
   const handleCancel = async (id) => {
     try {
       const res = await fetch(`${ADMIN_API}/appointments/${id}/cancel`, {
         method: "PATCH",
       });
-
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
         console.error("❌ Failed to cancel:", err.error || res.statusText);
         return;
       }
-
       await fetchAppointments(selectedUser.id);
     } catch (err) {
       console.error("❌ Error canceling appointment:", err);
     }
   };
 
-  // ===== Add appointment (for the selected user) =====
+  /* ============================================================
+     ADD APPOINTMENT
+     ============================================================ */
   const handleAddAppointment = () => {
-    console.log("TODO: open Add Appointment modal for user:", selectedUser);
+    setShowAddAppointmentModal(true);
   };
 
-  // ===== Add user =====
+  // ✅ Removed POST logic here — InspoModal now handles it.
+  const handleAppointmentCreated = async () => {
+    // just refresh appointments
+    if (selectedUser) await fetchAppointments(selectedUser.id);
+    setShowAddAppointmentModal(false);
+  };
+
+  /* ============================================================
+     ADD USER
+     ============================================================ */
   const handleAddUser = async (userData) => {
     try {
       const res = await fetch(`${API}/users`, {
@@ -130,7 +145,6 @@ export default function UsersPage() {
       });
 
       const data = await res.json();
-
       if (!res.ok) {
         console.error(
           "❌ Failed to create user:",
@@ -141,16 +155,22 @@ export default function UsersPage() {
 
       console.log("✅ User created:", data);
       setShowAddUserModal(false);
-      fetchUsers(); // refresh the table
+      fetchUsers();
     } catch (err) {
       console.error("❌ Error creating user:", err);
     }
   };
 
+  /* ============================================================
+     INIT
+     ============================================================ */
   useEffect(() => {
     fetchUsers();
   }, []);
 
+  /* ============================================================
+     RENDER
+     ============================================================ */
   return (
     <main className={styles.page}>
       <h1 className={styles.title}>👥 Users Management</h1>
@@ -160,10 +180,10 @@ export default function UsersPage() {
         users={users}
         selectedUser={selectedUser}
         onSelectUser={handleSelectUser}
-        onAddUser={() => setShowAddUserModal(true)} // ✅ open Add User modal
+        onAddUser={() => setShowAddUserModal(true)}
       />
 
-      {/* ==== USER DETAILS (appointments + charts) ==== */}
+      {/* ==== USER DETAILS ==== */}
       {selectedUser && (
         <UserDetails
           user={selectedUser}
@@ -182,6 +202,15 @@ export default function UsersPage() {
         <AddUserModal
           onClose={() => setShowAddUserModal(false)}
           onConfirm={handleAddUser}
+        />
+      )}
+
+      {/* ==== ADD APPOINTMENT MODAL ==== */}
+      {showAddAppointmentModal && selectedUser && (
+        <AddAppointmentModal
+          user={selectedUser}
+          onClose={() => setShowAddAppointmentModal(false)}
+          onConfirm={handleAppointmentCreated} // ✅ only refresh after success
         />
       )}
     </main>

@@ -26,6 +26,7 @@ import {
   getOverrides,
   saveOverride,
   deleteOverride,
+  getAvailableSlots,
 } from "../controllers/adminScheduleController.js";
 
 const router = express.Router();
@@ -36,7 +37,7 @@ const router = express.Router();
 router.get("/schedules", getSchedules);
 router.post("/schedules", addSchedule);
 router.delete("/schedules/:id", deleteSchedule);
-
+router.get("/schedule/slots", getAvailableSlots);
 /* ============================================================
    ⏰ SCHEDULE SLOTS (Individual time slots inside a day template)
    ============================================================ */

@@ -94,26 +94,11 @@
 }
 
 /* ===== Actions ===== */
+/* ===== Actions ===== */
 .popupActions {
   display: flex;
-  justify-content: space-between;
-  margin-top: 12px;
-  gap: 10px;
-}
-
-.confirmBtn {
-  background: var(--brand-accent);
-  color: #fff;
-  border: none;
-  border-radius: var(--radius);
-  padding: 8px 16px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: background 0.25s ease;
-}
-
-.confirmBtn:hover {
-  background: #c82333;
+  justify-content: flex-end; /* align right ✅ */
+  margin-top: 1.5rem;
 }
 
 .cancelBtn {
@@ -121,7 +106,7 @@
   border: 1.5px solid var(--brand-text);
   color: var(--brand-text);
   border-radius: var(--radius);
-  padding: 8px 16px;
+  padding: 8px 18px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.25s ease;
@@ -129,6 +114,7 @@
 
 .cancelBtn:hover {
   background: var(--card-hover);
+  transform: scale(1.03);
 }
 
 /* ===== Responsive ===== */
@@ -151,4 +137,277 @@
     font-size: 0.9rem;
     padding: 7px 12px;
   }
+}
+.tableWrap {
+  width: 100%;
+  max-height: 300px;
+  overflow-y: auto;
+  margin-top: 1rem;
+  border-radius: var(--radius);
+  background: var(--card-bg);
+  box-shadow: 0 0 12px var(--brand-accent);
+  scrollbar-width: none;
+}
+.tableWrap::-webkit-scrollbar {
+  display: none;
+}
+
+/* Table structure */
+.slotTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-main);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+/* Accent header */
+.slotTable thead {
+  position: sticky;
+  top: 0;
+  background: var(--brand-accent);
+  color: #fff;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  box-shadow: 0 2px 6px var(--brand-accent);
+}
+
+.slotTable th,
+.slotTable td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+}
+
+/* Row states */
+.slotRow {
+  transition: background 0.25s ease, transform 0.2s ease;
+}
+
+.slotRow:hover {
+  background: var(--card-hover); /* pink on hover */
+  color: #000;
+  transform: scale(1.01);
+}
+
+.taken {
+  background: #f3f3f3;
+  color: #777;
+  cursor: not-allowed;
+}
+
+/* 🔴 Selected row */
+.selected {
+  background: var(--brand-accent);
+  color: #fff;
+  transform: scale(1.01);
+}
+
+/* Keep time readable */
+.slotTime {
+  font-weight: 600;
+}
+
+/* Status column */
+.slotStatus {
+  text-transform: capitalize;
+}
+
+/* Username column */
+.slotUser {
+  font-style: italic;
+}
+
+/* 📘 Book button — normal */
+.bookBtn {
+  background: var(--brand-accent);
+  border: none;
+  color: #fff;
+  padding: 0.35rem 0.9rem;
+  border-radius: var(--radius);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.bookBtn:hover {
+  background: color-mix(in oklab, var(--brand-accent) 80%, #fff 20%);
+  transform: scale(1.05);
+}
+
+/* 💖 Book button inside selected row — pink bg, black text */
+.selected .bookBtn {
+  background: var(--card-hover); /* pink */
+  color: var(--brand-text); /* black */
+  font-weight: 600;
+  border: 1px solid color-mix(in oklab, var(--brand-accent) 50%, #000 10%);
+}
+
+.selected .bookBtn:hover {
+  background: color-mix(in oklab, var(--card-hover) 90%, #fff 10%);
+  color: var(--brand-text);
+  transform: scale(1.05);
+}
+/* ===== Inspo Upload Modal ===== */
+.uploadBlock {
+  margin: 1rem 0;
+  text-align: left;
+}
+
+.uploadBlock label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--brand-accent);
+}
+
+.uploadBlock input[type="file"] {
+  display: block;
+  width: 100%;
+  padding: 6px;
+  border: 1px solid var(--brand-accent);
+  border-radius: var(--radius);
+  background: var(--card-bg);
+  color: var(--brand-text);
+  cursor: pointer;
+}
+
+.previewImg {
+  margin-top: 10px;
+  width: 100%;
+  max-height: 200px;
+  object-fit: cover;
+  border-radius: var(--radius);
+  border: 1px solid var(--brand-accent);
+  box-shadow: 0 0 8px rgba(220, 53, 69, 0.2);
+}
+
+.textArea {
+  width: 100%;
+  min-height: 80px;
+  padding: 10px;
+  border: 1.5px solid var(--brand-accent);
+  border-radius: var(--radius);
+  background: var(--card-bg);
+  color: var(--brand-text);
+  font-size: 0.95rem;
+  margin-top: 1rem;
+  resize: none;
+}
+
+.textArea:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.15);
+}
+/* === Inspo Modal customizations === */
+.inspoCard {
+  max-width: 480px;
+  text-align: left;
+}
+
+.metaText {
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+  color: color-mix(in srgb, var(--brand-text) 80%, #555);
+}
+
+.uploadSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 1rem 0;
+  border: 2px dashed var(--brand-accent);
+  padding: 1rem;
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--brand-bg) 90%, #fff);
+  transition: border-color 0.25s ease;
+}
+
+.uploadSection:hover {
+  border-color: color-mix(in srgb, var(--brand-accent) 80%, #000);
+}
+
+.uploadLabel {
+  color: var(--brand-accent);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.uploadInput {
+  width: 100%;
+  margin-bottom: 1rem;
+  cursor: pointer;
+  color: var(--brand-text);
+}
+
+.previewImgLarge {
+  width: 100%;
+  max-height: 220px;
+  object-fit: cover;
+  border-radius: var(--radius);
+  box-shadow: 0 0 10px var(--brand-accent);
+  margin-top: 0.5rem;
+}
+
+/* Textarea styling */
+.textArea {
+  width: 100%;
+  min-height: 100px;
+  margin: 1rem 0;
+  border-radius: var(--radius);
+  border: 1.5px solid var(--brand-accent);
+  padding: 0.75rem;
+  font-size: 0.95rem;
+  resize: none;
+  background: var(--card-bg);
+  color: var(--brand-text);
+  transition: all 0.25s ease;
+}
+
+.textArea:focus {
+  outline: none;
+  border-color: var(--brand-accent);
+  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.15);
+}
+/* Hide the real input */
+.hiddenFileInput {
+  display: none;
+}
+
+/* Wrapper for file input */
+.uploadBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Pretty pink button */
+.customFileBtn {
+  display: inline-block;
+  background: var(--brand-accent);
+  color: var(--brand-bg);
+  font-weight: 600;
+  padding: 0.6rem 1.4rem;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.25s ease;
+  border: none;
+  box-shadow: 0 2px 8px var(--shadow);
+}
+
+.customFileBtn:hover {
+  background: color-mix(in srgb, var(--brand-accent) 80%, #000);
+  transform: translateY(-1px);
+}
+
+/* File name preview */
+.fileName {
+  font-size: 0.9rem;
+  color: var(--brand-text);
+  max-width: 250px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }

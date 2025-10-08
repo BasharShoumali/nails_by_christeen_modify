@@ -474,3 +474,59 @@
   word-break: break-word;
   max-width: 300px; /* adjust as needed */
 }
+/* === Dropdown Fix === */
+select,
+option {
+  color: var(--brand-text) !important; /* dark charcoal text */
+  background-color: var(--card-bg) !important; /* semi-white background */
+}
+
+/* For dark mode consistency (hover/focus) */
+select:focus,
+option:focus {
+  outline: 2px solid var(--brand-accent);
+  background-color: var(--card-hover);
+}
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.modalCard {
+  background: var(--card-bg);
+  color: var(--brand-text);
+  border-radius: var(--radius);
+  box-shadow: 0 4px 20px var(--shadow);
+  padding: 24px;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+}
+
+.modalActions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.confirmBtn {
+  background: var(--brand-accent);
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+
+.cancelBtn {
+  background: var(--brand-bg);
+  color: var(--brand-text);
+  padding: 8px 16px;
+  border-radius: var(--radius);
+  cursor: pointer;
+}

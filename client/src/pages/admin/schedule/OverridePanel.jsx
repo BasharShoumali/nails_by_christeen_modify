@@ -1,11 +1,18 @@
 import { useState } from "react";
 import styles from "./SchedulePage.module.css";
-import Popup from "../../../components/popup/Popup"; 
+import Popup from "../../../components/popup/Popup";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-
 const API = import.meta.env.VITE_API_BASE || "http://localhost:4000";
+
+/** 🕒 Local date converter — prevents 1-day shift */
+function toLocalDateString(date) {
+  if (!date) return "";
+  const offset = date.getTimezoneOffset();
+  const local = new Date(date.getTime() - offset * 60 * 1000);
+  return local.toISOString().split("T")[0];
+}
 
 export default function OverridePanel({ schedules, overrides, onChanged }) {
   const [date, setDate] = useState("");
@@ -80,7 +87,6 @@ export default function OverridePanel({ schedules, overrides, onChanged }) {
     );
   };
 
-  /** === Format dates nicely === */
   const formatDate = (d) => (d ? d.slice(0, 10) : "—");
 
   return (
@@ -95,11 +101,12 @@ export default function OverridePanel({ schedules, overrides, onChanged }) {
       <div className={styles.row}>
         <DatePicker
           selected={date ? new Date(date) : null}
-          onChange={(d) => setDate(d ? d.toISOString().split("T")[0] : "")}
+          onChange={(d) => setDate(toLocalDateString(d))}
           placeholderText="Pick a date"
           className={styles.input}
           dateFormat="yyyy-MM-dd"
         />
+
         <select
           className={styles.input}
           value={scheduleId}
@@ -112,12 +119,14 @@ export default function OverridePanel({ schedules, overrides, onChanged }) {
             </option>
           ))}
         </select>
+
         <input
           className={styles.input}
           placeholder="Reason (optional)"
           value={reason}
           onChange={(e) => setReason(e.target.value)}
         />
+
         <button className={styles.btn} onClick={saveOverride}>
           💾 Save
         </button>

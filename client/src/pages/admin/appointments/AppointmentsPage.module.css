@@ -347,3 +347,17 @@
   background: color-mix(in oklab, var(--brand-accent) 40%, transparent);
   border-radius: 10px;
 }
+.statusDone {
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.statusClosedIcon {
+  color: #1fa37c; /* green */
+}
+
+.statusCanceledIcon {
+  color: #dc3545; /* red */
+}

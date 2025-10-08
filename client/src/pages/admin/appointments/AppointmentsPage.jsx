@@ -198,7 +198,15 @@ export default function AppointmentsPage() {
                         </button>
                       </>
                     ) : (
-                      <span className={styles.statusDone}>✔ {a.status}</span>
+                      <span
+                        className={`${styles.statusDone} ${
+                          a.status === "closed"
+                            ? styles.statusClosedIcon
+                            : styles.statusCanceledIcon
+                        }`}
+                      >
+                        {a.status === "closed" ? "✔ Closed" : "❌ Canceled"}
+                      </span>
                     )}
                   </td>
                 </tr>

@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import path from "path";
 import { pool } from "./pool/db.js";
 
 // === Routes ===
@@ -19,24 +20,35 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// === Static folders for uploaded files ===
-app.use("/uploads", express.static("uploads"));
+// === 🖼 Serve uploaded inspo images ===
+// This matches your controller: /upload/inspo/...
+app.use("/upload", express.static(path.join(process.cwd(), "upload")));
 
-// === Route mounting ===
+// === Route Mounting ===
+
+// 🔐 Auth
 app.use("/api", authRouter);
+
+// 👥 Users
 app.use("/api/users", usersRoutes);
+
+// 🗓 Scheduling & Appointments
 app.use("/api/admin", adminScheduleRoutes);
 app.use("/api/admin/appointments", appointmentsRoutes);
-app.use("/api/admin", reportsRoute);
-app.use("/api/admin", financeRoutes);
 
-// ✅ Stock management endpoints
+// 📊 Reports & Finance
+app.use("/api/admin/reports", reportsRoute);
+app.use("/api/admin/finance", financeRoutes);
+
+// 🛍 Products & Categories
 app.use("/api/admin/products", productsRoutes);
 app.use("/api/admin/categories", categoriesRoutes);
 
-// === Test route ===
-app.get("/", (req, res) => res.send("✅ API running"));
+// === Health Check ===
+app.get("/", (req, res) => res.send("✅ API running successfully"));
 
-// === Start server ===
+// === Start Server ===
 const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+app.listen(PORT, () =>
+  console.log(`🚀 Server running on http://localhost:${PORT}`)
+);

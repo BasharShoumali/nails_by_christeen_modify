@@ -149,6 +149,7 @@ export async function deleteUser(req, res) {
  *  ======================== */
 export async function getUserAppointments(req, res) {
   try {
+    console.log("we got it");
     const userId = req.params.id;
     const [rows] = await pool.query(
       `
@@ -159,6 +160,7 @@ export async function getUserAppointments(req, res) {
         a.notes,
         a.amount_paid,
         a.slot,
+        a.inspo_img,
         DATE_FORMAT(a.work_date, '%Y-%m-%d') AS work_date,  -- 👈
         DATE_FORMAT(a.created_at, '%Y-%m-%d') AS created_at -- 👈
       FROM appointments a
