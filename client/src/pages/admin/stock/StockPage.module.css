@@ -596,3 +596,129 @@
   content: "🧾";
   font-size: 1.2rem;
 }
+.viewBtn {
+  background: var(--brand-accent);
+  color: #fff;
+  border: none;
+  padding: 6px 10px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: 0.2s ease;
+  margin-right: 4px; /* optional small offset from border */
+}
+
+.viewBtn:hover {
+  background: color-mix(in oklab, var(--brand-accent) 80%, white 20%);
+}
+
+/* Popup overlay reused for viewing items */
+.itemsList {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0;
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.itemRow {
+  display: flex;
+  justify-content: space-between;
+  background: var(--card-bg);
+  margin-bottom: 6px;
+  padding: 6px 10px;
+  border-radius: var(--radius);
+  box-shadow: 0 1px 4px var(--shadow);
+}
+.itemsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.itemCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  box-shadow: 0 2px 6px var(--shadow);
+  padding: 10px;
+}
+
+.itemImg {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: var(--radius);
+  margin-bottom: 6px;
+}
+
+.itemInfo {
+  text-align: center;
+}
+
+.itemInfo h4 {
+  font-size: 0.9rem;
+  margin: 0;
+  color: var(--brand-text);
+}
+
+.itemInfo p {
+  margin: 2px 0;
+  font-size: 0.85rem;
+  color: var(--brand-text);
+}
+.previewOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.previewBox {
+  max-width: 90vw;
+  max-height: 90vh;
+}
+
+.previewImg {
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: var(--radius);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+}
+/* === 🖼️ Image Preview Popup === */
+.previewOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.previewBox {
+  background: var(--card-bg, #fff);
+  padding: 10px;
+  border-radius: var(--radius, 10px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  max-width: 600px; /* smaller popup */
+  max-height: 500px; /* prevent oversized images */
+  width: 90%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.previewImg {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  border-radius: var(--radius, 8px);
+}

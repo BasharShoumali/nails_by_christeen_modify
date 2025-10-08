@@ -11,6 +11,7 @@ export default function AppointmentsTable({
 }) {
   const [modalType, setModalType] = useState(null);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
+  const [previewImg, setPreviewImg] = useState(null); // 🖼️ for full-size preview
 
   const openModal = (type, appointment) => {
     setSelectedAppointment(appointment);
@@ -67,7 +68,6 @@ export default function AppointmentsTable({
                 </tr>
               ) : (
                 appointments.map((a) => {
-                  // ✅ ensure clean image URL
                   const imgSrc =
                     a.inspo_img && a.inspo_img.startsWith("http")
                       ? a.inspo_img
@@ -80,7 +80,6 @@ export default function AppointmentsTable({
 
                   return (
                     <tr key={a.id}>
-                      {/* 🗓 Date + Time */}
                       <td>
                         {formatDate(a.work_date)}{" "}
                         {a.slot && (
@@ -88,7 +87,6 @@ export default function AppointmentsTable({
                         )}
                       </td>
 
-                      {/* 🧾 Status */}
                       <td className={styles[a.status]}>
                         <span className={styles.statusText}>{a.status}</span>
                         {a.status === "closed" && (
@@ -98,18 +96,17 @@ export default function AppointmentsTable({
                         )}
                       </td>
 
-                      {/* 📝 Notes */}
                       <td className={styles.notesCell}>
                         {a.notes?.trim() ? a.notes : "—"}
                       </td>
 
-                      {/* 🖼️ Inspo Image */}
                       <td className={styles.imageCell}>
                         {imgSrc ? (
                           <img
                             src={imgSrc}
                             alt="Inspo"
                             className={styles.inspoImg}
+                            onClick={() => setPreviewImg(imgSrc)} // 🖱️ open popup
                             onError={(e) => {
                               e.currentTarget.src =
                                 "data:image/svg+xml;charset=UTF-8," +
@@ -127,7 +124,6 @@ export default function AppointmentsTable({
                         )}
                       </td>
 
-                      {/* ⚙️ Actions */}
                       <td>
                         {a.status === "open" ? (
                           <>
@@ -156,6 +152,23 @@ export default function AppointmentsTable({
           </table>
         )}
       </div>
+
+      {/* 🖼️ Full-size image popup */}
+      {previewImg && (
+        <div
+          className={styles.previewOverlay}
+          onClick={() => setPreviewImg(null)}
+        >
+          <div className={styles.previewBox}>
+            <img
+              src={previewImg}
+              alt="Preview"
+              className={styles.previewImg}
+              onClick={(e) => e.stopPropagation()} // prevent closing when clicking the image
+            />
+          </div>
+        </div>
+      )}
 
       {/* ✅ Close Modal */}
       {modalType === "close" && selectedAppointment && (

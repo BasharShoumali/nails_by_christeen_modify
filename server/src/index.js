@@ -21,8 +21,8 @@ app.use(cors());
 app.use(express.json());
 
 // === 🖼 Serve uploaded inspo images ===
-// This matches your controller: /upload/inspo/...
-app.use("/upload", express.static(path.join(process.cwd(), "upload")));
+// This matches your controller: /uploads/inspo/...
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
 // === Route Mounting ===
 

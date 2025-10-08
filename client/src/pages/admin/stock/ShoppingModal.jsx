@@ -17,8 +17,9 @@ export default function ShoppingModal({ API, onClose }) {
     const loadProducts = async () => {
       try {
         const res = await fetch(`${API}/api/admin/products`);
+        if (!res.ok) throw new Error(`Failed: ${res.status}`);
         const data = await res.json();
-        setProducts(data);
+        setProducts(Array.isArray(data) ? data : []);
       } catch (err) {
         console.error("❌ Failed to fetch products:", err);
       }
@@ -27,8 +28,10 @@ export default function ShoppingModal({ API, onClose }) {
   }, [API]);
 
   const addItem = () =>
-    setItems([...items, { product_id: "", name: "", quantity: "" }]);
-  const removeItem = (i) => setItems(items.filter((_, idx) => idx !== i));
+    setItems((prev) => [...prev, { product_id: "", name: "", quantity: "" }]);
+  const removeItem = (i) =>
+    setItems((prev) => prev.filter((_, idx) => idx !== i));
+
   const updateItem = (i, field, value) =>
     setItems((prev) =>
       prev.map((it, idx) => (idx === i ? { ...it, [field]: value } : it))
@@ -52,7 +55,7 @@ export default function ShoppingModal({ API, onClose }) {
 
     setLoading(true);
     try {
-      const res = await fetch(`${API}/api/admin/shopping`, {
+      const res = await fetch(`${API}/api/admin/finance/shopping`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -65,12 +68,12 @@ export default function ShoppingModal({ API, onClose }) {
         }),
       });
 
-      if (!res.ok) throw new Error("Failed to save shopping list");
+      if (!res.ok)
+        throw new Error(`Failed to save shopping list: ${res.status}`);
 
-      // ✅ Instead of alert, show confirmation popup
-      setShowConfirm(true);
+      setShowConfirm(true); // ✅ success popup
     } catch (err) {
-      console.error(err);
+      console.error("❌ Error saving shopping list:", err);
       alert("❌ Failed to save shopping list");
     } finally {
       setLoading(false);
@@ -79,8 +82,7 @@ export default function ShoppingModal({ API, onClose }) {
 
   const handleConfirmClose = () => {
     setShowConfirm(false);
-    onClose();
-    window.location.reload(); // 🔁 Refresh after closing popup
+    onClose(true); // refresh parent
   };
 
   return (
@@ -114,7 +116,7 @@ export default function ShoppingModal({ API, onClose }) {
 
             return (
               <div key={i} className={styles.itemRow}>
-                {/* Searchable input */}
+                {/* 🔍 Searchable product input */}
                 <div className={styles.dropdownWrapper}>
                   <input
                     type="text"
@@ -179,7 +181,7 @@ export default function ShoppingModal({ API, onClose }) {
           >
             {loading ? "Saving..." : "✅ Finish"}
           </button>
-          <button onClick={onClose} className={styles.cancelBtn}>
+          <button onClick={() => onClose(false)} className={styles.cancelBtn}>
             Cancel
           </button>
         </div>

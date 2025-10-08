@@ -15,6 +15,9 @@ export default function AppointmentsPage() {
   const [error, setError] = useState(null);
   const [totalAmount, setTotalAmount] = useState(0);
 
+  // 🖼️ Popup for inspo image
+  const [previewImg, setPreviewImg] = useState(null);
+
   // Close modal
   const [showModal, setShowModal] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
@@ -23,7 +26,7 @@ export default function AppointmentsPage() {
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [appointmentToCancel, setAppointmentToCancel] = useState(null);
 
-  // Fetch appointments for a given date
+  // Fetch appointments
   const fetchAppointments = async (date) => {
     try {
       setLoading(true);
@@ -36,7 +39,6 @@ export default function AppointmentsPage() {
       const safe = Array.isArray(data) ? data : [];
       setAppointments(safe);
 
-      // Total of closed appointments for the day
       const total = safe
         .filter((a) => a.status === "closed" && a.amount_paid != null)
         .reduce((sum, a) => sum + Number(a.amount_paid || 0), 0);
@@ -53,13 +55,11 @@ export default function AppointmentsPage() {
     fetchAppointments(selectedDate);
   }, [selectedDate]);
 
-  // Open Close modal
   const handleClose = (appt) => {
     setSelectedAppointment(appt);
     setShowModal(true);
   };
 
-  // Confirm close appointment with amount
   const confirmClose = async (amount) => {
     try {
       await fetch(`${API}/appointments/${selectedAppointment.id}/close`, {
@@ -75,13 +75,11 @@ export default function AppointmentsPage() {
     }
   };
 
-  // Open Cancel modal
   const handleCancelClick = (appt) => {
     setAppointmentToCancel(appt);
     setShowCancelModal(true);
   };
 
-  // Confirm cancel
   const confirmCancel = async () => {
     try {
       await fetch(`${API}/appointments/${appointmentToCancel.id}/cancel`, {
@@ -117,13 +115,13 @@ export default function AppointmentsPage() {
         </div>
       </div>
 
-      {/* Daily total */}
       <h2 className={styles.total}>
         💵 Total Amount: ₪{totalAmount.toFixed(2)}
       </h2>
 
       {error && <p className={styles.error}>⚠️ {error}</p>}
       {loading && <p className={styles.loading}>Loading appointments...</p>}
+
       <div className={styles.tableWrapper}>
         <table className={styles.table}>
           <thead>
@@ -176,6 +174,7 @@ export default function AppointmentsPage() {
                         src={a.inspo_img}
                         alt="Inspo"
                         className={styles.inspoImg}
+                        onClick={() => setPreviewImg(a.inspo_img)} // 🖱️ open popup
                       />
                     ) : (
                       "-"
@@ -215,6 +214,24 @@ export default function AppointmentsPage() {
           </tbody>
         </table>
       </div>
+
+      {/* 🖼️ Image popup */}
+      {previewImg && (
+        <div
+          className={styles.previewOverlay}
+          onClick={() => setPreviewImg(null)}
+        >
+          <div className={styles.previewBox}>
+            <img
+              src={previewImg}
+              alt="Preview"
+              className={styles.previewImg}
+              onClick={(e) => e.stopPropagation()}
+            />
+          </div>
+        </div>
+      )}
+
       {/* Close modal */}
       {showModal && (
         <CloseAppointmentModal

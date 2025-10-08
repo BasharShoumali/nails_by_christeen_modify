@@ -361,3 +361,41 @@
 .statusCanceledIcon {
   color: #dc3545; /* red */
 }
+/* ====== Image Preview Popup (Square) ====== */
+.previewOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3000;
+  cursor: zoom-out;
+  animation: fadeIn 0.25s ease;
+}
+
+.previewBox {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 8px;
+  box-shadow: 0 0 18px rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 80vmin;
+  max-height: 80vmin;
+  aspect-ratio: 1 / 1;
+  cursor: default;
+}
+
+.previewImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: var(--radius);
+  transition: transform 0.25s ease;
+}
+
+.previewImg:hover {
+  transform: scale(1.03);
+}

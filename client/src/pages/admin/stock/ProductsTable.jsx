@@ -10,6 +10,7 @@ export default function ProductsTable({ API }) {
   const [confirm, setConfirm] = useState(null); // { action, product, value? }
   const [search, setSearch] = useState("");
   const [showLowStock, setShowLowStock] = useState(false);
+  const [previewImg, setPreviewImg] = useState(null); // 🖼️ image preview
 
   /** 🧭 Fetch all products */
   const fetchProducts = async () => {
@@ -45,9 +46,7 @@ export default function ProductsTable({ API }) {
     try {
       const res = await fetch(
         `${API}/api/admin/products/${confirm.product.id}`,
-        {
-          method: "DELETE",
-        }
+        { method: "DELETE" }
       );
       if (!res.ok) throw new Error("Delete failed");
       setProducts((prev) => prev.filter((p) => p.id !== confirm.product.id));
@@ -59,7 +58,7 @@ export default function ProductsTable({ API }) {
     }
   };
 
-  /** 🔓 Open New (reduces quantity + updates last opened date) */
+  /** 🔓 Open New */
   const handleOpenNewClick = (product) => {
     if (product.quantity <= 0) {
       alert("⚠️ Cannot open — this item is out of stock!");
@@ -73,9 +72,7 @@ export default function ProductsTable({ API }) {
     try {
       const res = await fetch(
         `${API}/api/admin/products/${confirm.product.id}/open`,
-        {
-          method: "POST",
-        }
+        { method: "POST" }
       );
       if (!res.ok) throw new Error("Failed to mark as opened");
       const data = await res.json();
@@ -116,7 +113,6 @@ export default function ProductsTable({ API }) {
       );
       if (!res.ok) throw new Error("Failed to add quantity");
       const data = await res.json();
-
       setProducts((prev) =>
         prev.map((p) =>
           p.id === confirm.product.id
@@ -220,6 +216,7 @@ export default function ProductsTable({ API }) {
                         src={`${API}/${p.main_image}`}
                         alt={p.name}
                         className={styles.productImg}
+                        onClick={() => setPreviewImg(`${API}/${p.main_image}`)} // 🖼️ click to preview
                       />
                     ) : (
                       <span className={styles.noImg}>No Image</span>
@@ -235,11 +232,7 @@ export default function ProductsTable({ API }) {
                     {p.last_opened_date
                       ? new Date(p.last_opened_date).toLocaleDateString(
                           "en-US",
-                          {
-                            year: "numeric",
-                            month: "short",
-                            day: "numeric",
-                          }
+                          { year: "numeric", month: "short", day: "numeric" }
                         )
                       : "-"}
                   </td>
@@ -340,6 +333,23 @@ export default function ProductsTable({ API }) {
                 Cancel
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* === 🖼️ Full-size Image Preview === */}
+      {previewImg && (
+        <div
+          className={styles.previewOverlay}
+          onClick={() => setPreviewImg(null)}
+        >
+          <div className={styles.previewBox}>
+            <img
+              src={previewImg}
+              alt="Preview"
+              className={styles.previewImg}
+              onClick={(e) => e.stopPropagation()}
+            />
           </div>
         </div>
       )}

@@ -1,10 +1,9 @@
 import { pool } from "../pool/db.js";
 
-// 🧾 Add new shopping list + update products + update outcome
+/* 🛒 Add new shopping list + update product quantities + update finance outcome */
 export async function addShoppingList(req, res) {
   const { shop_name, total_cost, items } = req.body;
 
-  // 🧩 Validate input
   if (
     !shop_name ||
     !total_cost ||
@@ -23,32 +22,32 @@ export async function addShoppingList(req, res) {
   await conn.beginTransaction();
 
   try {
+    // ✅ Ensure items are stored as valid JSON (not double-stringified)
+    const jsonItems =
+      typeof items === "string"
+        ? items
+        : JSON.stringify(items, (key, value) =>
+            value === undefined ? null : value
+          );
+
     // 🛒 Insert shopping record
     const [result] = await conn.query(
-      `INSERT INTO shopping_list (shop_name, total_cost, month_year, created_at)
-       VALUES (?, ?, ?, NOW())`,
-      [shop_name, total_cost, month_year]
+      `INSERT INTO shopping_list (shop_name, total_cost, month_year, purchased_at, items)
+       VALUES (?, ?, ?, NOW(), CAST(? AS JSON))`,
+      [shop_name, total_cost, month_year, jsonItems]
     );
-
     const shoppingId = result.insertId;
 
-    // 🧩 Store each purchased item (optional, if you want itemized list)
+    // 🔁 Update each product’s stock
     for (const item of items) {
       if (!item.product_id || !item.quantity) continue;
-      await conn.query(
-        `INSERT INTO shopping_items (shopping_id, product_id, quantity)
-         VALUES (?, ?, ?)`,
-        [shoppingId, item.product_id, item.quantity]
-      );
-
-      // 🔁 Update product quantities
       await conn.query(
         `UPDATE products SET quantity = quantity + ? WHERE id = ?`,
         [item.quantity, item.product_id]
       );
     }
 
-    // 💰 Update or insert month’s outcome
+    // 💰 Update monthly outcome
     await conn.query(
       `INSERT INTO monthly_finance (month_year, outcome)
        VALUES (?, ?)
@@ -61,48 +60,104 @@ export async function addShoppingList(req, res) {
   } catch (err) {
     await conn.rollback();
     console.error("❌ Shopping list error:", err);
-    res.status(500).json({ error: "Failed to record shopping list" });
+    res.status(500).json({ error: err.message });
   } finally {
     conn.release();
   }
 }
 
-// 🛍 Get all shopping history
+/* 🛍 Get all shopping history — with product name + image */
 export async function getShoppingList(req, res) {
   try {
-    const [rows] = await pool.query(`
-      SELECT 
-        id,
-        shop_name,
-        total_cost,
-        month_year,
-        purchased_at AS created_at,
-        items
+    // 1️⃣ Fetch all shopping lists
+    const [lists] = await pool.query(`
+      SELECT id, shop_name, total_cost, month_year, purchased_at, items
       FROM shopping_list
       ORDER BY purchased_at DESC
     `);
 
-    // 🧩 Convert total_cost from string → number
-    const fixedRows = rows.map((r) => ({
-      ...r,
-      total_cost: parseFloat(r.total_cost),
-    }));
+    // 2️⃣ Fetch all products
+    const [products] = await pool.query(`
+      SELECT 
+        p.id,
+        p.name,
+        (SELECT pi.file_path 
+         FROM product_images pi 
+         WHERE pi.product_id = p.id 
+         ORDER BY pi.uploaded_at ASC LIMIT 1) AS image_url
+      FROM products p
+    `);
 
-    res.json(fixedRows);
+    const productMap = new Map(products.map((p) => [p.id, p]));
+
+    // 3️⃣ Build response
+    const result = lists.map((list) => {
+      let parsedItems = [];
+      try {
+        if (typeof list.items === "string") {
+          // if stored as string → try to parse it
+          parsedItems = JSON.parse(list.items);
+          // handle double-encoded JSON (string inside string)
+          if (typeof parsedItems === "string")
+            parsedItems = JSON.parse(parsedItems);
+        } else if (Array.isArray(list.items)) {
+          parsedItems = list.items;
+        } else {
+          parsedItems = [];
+        }
+      } catch {
+        parsedItems = [];
+      }
+
+      const detailedItems = parsedItems.map((item) => {
+        const p = productMap.get(item.product_id) || {};
+
+        // 🧩 Normalize image path
+        let imgPath = p.image_url || null;
+        if (imgPath) {
+          imgPath = imgPath.replace(/^\/+/, "").replace(/^uploads\//, "");
+          imgPath = `uploads/${imgPath}`;
+        }
+
+        return {
+          product_id: item.product_id,
+          quantity: item.quantity,
+          cost: item.cost || 0,
+          name: p.name || `Product #${item.product_id}`,
+          image_url: imgPath
+            ? `${
+                process.env.BASE_URL?.replace(/\/$/, "") ||
+                "http://localhost:4000"
+              }/${imgPath}`
+            : null,
+        };
+      });
+
+      return {
+        id: list.id,
+        shop_name: list.shop_name,
+        total_cost: list.total_cost,
+        month_year: list.month_year,
+        purchased_at: list.purchased_at,
+        items: detailedItems,
+      };
+    });
+
+    res.json(result);
   } catch (err) {
     console.error("❌ Error fetching shopping history:", err);
     res.status(500).json({ error: err.message });
   }
 }
 
-// 📊 Get all monthly finance data (income/outcome summary)
+/* 📊 Get monthly finance summary */
 export async function getFinance(req, res) {
   try {
-    const [rows] = await pool.query(
-      `SELECT month_year, income, outcome
-       FROM monthly_finance
-       ORDER BY month_year DESC`
-    );
+    const [rows] = await pool.query(`
+      SELECT month_year, income, outcome
+      FROM monthly_finance
+      ORDER BY month_year DESC
+    `);
     res.json(rows);
   } catch (err) {
     console.error("❌ Error fetching finance data:", err);
