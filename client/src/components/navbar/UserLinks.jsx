@@ -13,7 +13,7 @@ export default function UserLinks({ isAdmin, onLinkClick }) {
         </Link>
       </li>
       <li>
-        <Link to="/account" onClick={onLinkClick}>
+        <Link to="/my-profile" onClick={onLinkClick}>
           Profile
         </Link>
       </li>

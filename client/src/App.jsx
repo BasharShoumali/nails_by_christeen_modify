@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/navbar/Navbar";
 import Footer from "./components/Footer/Footer";
+//admins pages
 import Login from "./pages/auth/login/Login";
 import Signup from "./pages/auth/signup/Signup";
 import PageNotFound from "./pages/auth/pageNotFound/PageNotFound";
@@ -9,6 +10,10 @@ import AdminsAppointmentsPage from "./pages/admin/appointments/AppointmentsPage"
 import AdminsReportsPage from "./pages/admin/reports/ReportsPage";
 import AdminsUsersPage from "./pages/admin/users/UsersPage";
 import AdminsStocksPage from "./pages/admin/stock/StockPage";
+//users pages
+import UserHomePage from "./pages/user/homePage/UserHomePage";
+import UserAppointmentsPage from "./pages/user/usersAppointments/UserAppointmentsPage";
+import UserProfilePage from "./pages/user/profile/UserProfilePage";
 import "./index.css";
 
 function App() {
@@ -20,7 +25,9 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="*" element={<PageNotFound />} />
-
+          <Route path="/" element={<UserHomePage />} />
+          <Route path="/myorders" element={<UserAppointmentsPage />} />
+          <Route path="/my-profile" element={<UserProfilePage />} />
           <Route path="/admin/schedule" element={<SchedulePage />} />
           <Route path="/admin/users" element={<AdminsUsersPage />} />
           <Route
@@ -29,15 +36,6 @@ function App() {
           />
           <Route path="/admin/reports" element={<AdminsReportsPage />} />
           <Route path="/admin/stocks" element={<AdminsStocksPage />} />
-          <Route
-            path="/"
-            element={
-              <div style={{ textAlign: "center", marginTop: "4rem" }}>
-                <h1>Welcome to Nails by Christeen 💅</h1>
-                <p>Use the navigation above to explore.</p>
-              </div>
-            }
-          />
         </Routes>
       </main>
       <Footer />

@@ -1,0 +1,217 @@
+.page {
+  padding: 2rem;
+  background: var(--brand-bg);
+  min-height: calc(100vh - 120px);
+  font-family: var(--font-main);
+  color: var(--brand-text);
+}
+
+/* === Headings === */
+.title {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: var(--brand-text);
+}
+
+/* === Table Layout === */
+.tableWrapper {
+  overflow-x: auto;
+  border-radius: var(--radius);
+  box-shadow: 0 2px 8px var(--shadow);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--card-bg);
+  border-radius: var(--radius);
+}
+
+.table th,
+.table td {
+  padding: 0.75rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.table th {
+  background: var(--brand-accent);
+  color: #fff;
+  font-weight: 600;
+}
+
+/* === Status Badges === */
+.status {
+  padding: 0.4rem 0.6rem;
+  border-radius: var(--radius);
+  font-weight: 600;
+}
+
+.open {
+  background: #e7ffe7;
+  color: #1fa37c;
+}
+
+.closed {
+  background: #e7f3ff;
+  color: #1976d2;
+}
+
+.canceled {
+  background: #ffe7e7;
+  color: #c62828;
+}
+
+/* === Cancel Button (red everywhere) === */
+.cancelBtn {
+  background: #dc3545; /* red */
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  padding: 0.45rem 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.25s ease, transform 0.2s ease;
+}
+
+.cancelBtn:hover {
+  background: #b92a37; /* darker red on hover */
+  transform: translateY(-2px);
+}
+
+/* === Thumbnail Images === */
+.inspoImg {
+  width: 60px;
+  height: 60px;
+  border-radius: var(--radius);
+  object-fit: cover;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.inspoImg:hover {
+  transform: scale(1.05);
+}
+
+/* === Feedback Text === */
+.noData,
+.loading,
+.error {
+  text-align: center;
+  font-size: 1rem;
+  margin-top: 2rem;
+}
+
+.error {
+  color: var(--brand-accent);
+}
+
+/* === Preview Popup === */
+.previewOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.previewBox {
+  background: var(--card-bg);
+  padding: 1rem;
+  border-radius: var(--radius);
+  box-shadow: 0 4px 20px var(--shadow);
+}
+
+.previewImg {
+  max-width: 90vw;
+  max-height: 80vh;
+  border-radius: var(--radius);
+}
+
+/* === Cancel Confirmation Popup === */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.modalCard {
+  background: var(--card-bg);
+  color: var(--brand-text);
+  border-radius: var(--radius);
+  box-shadow: 0 4px 20px var(--shadow);
+  padding: 24px;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  animation: popIn 0.25s ease;
+}
+
+.modalCard h3 {
+  color: var(--brand-accent);
+  margin-bottom: 0.5rem;
+}
+
+.modalCard p {
+  font-size: 0.95rem;
+  opacity: 0.85;
+}
+
+/* === Modal Buttons === */
+.modalActions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 1.2rem;
+}
+
+.confirmBtn {
+  background: #dc3545; /* red confirm */
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: var(--radius);
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.25s ease, transform 0.2s ease;
+}
+
+.confirmBtn:hover {
+  background: #b92a37;
+  transform: scale(1.05);
+}
+
+/* "No, Keep it" — softer outline style */
+.cancelBtn {
+  background: var(--brand-accent);
+  color: #fff;
+  border: 1px solid var(--brand-text);
+  padding: 8px 16px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.cancelBtn:hover {
+  background: var(--card-hover);
+  color: var(--brand-text);
+}
+
+/* === Animations === */
+@keyframes popIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

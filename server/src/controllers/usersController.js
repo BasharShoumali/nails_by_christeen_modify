@@ -175,3 +175,70 @@ export async function getUserAppointments(req, res) {
     res.status(500).json({ error: "Failed to fetch user's appointments" });
   }
 }
+/** ========================
+ *  FIELD-SPECIFIC UPDATE HELPERS
+ *  ======================== */
+export async function updateFirstName(req, res) {
+  await updateGenericField(req, res, "first_name");
+}
+
+export async function updateLastName(req, res) {
+  await updateGenericField(req, res, "last_name");
+}
+
+export async function updateDateOfBirth(req, res) {
+  await updateGenericField(req, res, "date_of_birth");
+}
+
+export async function updatePhone(req, res) {
+  await updateGenericField(req, res, "phone_raw");
+}
+
+export async function updatePassword(req, res) {
+  try {
+    const { id } = req.params;
+    const { value } = req.body;
+    if (!value)
+      return res.status(400).json({ error: "Missing password value" });
+
+    const hash = await bcrypt.hash(value, 10);
+    const [result] = await pool.query(
+      "UPDATE users SET password_hash = ? WHERE id = ?",
+      [hash, id]
+    );
+
+    if (result.affectedRows === 0)
+      return res.status(404).json({ error: "User not found" });
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error("❌ Error updating password:", err);
+    res.status(500).json({ error: "Failed to update password" });
+  }
+}
+
+/** ========================
+ *  SHARED HELPER FOR SIMPLE FIELDS
+ *  ======================== */
+async function updateGenericField(req, res, field) {
+  try {
+    const { id } = req.params;
+    const { value } = req.body;
+
+    if (value === undefined)
+      return res.status(400).json({ error: "Missing value" });
+
+    const [result] = await pool.query(
+      `UPDATE users SET ${field} = ? WHERE id = ?`,
+      [value, id]
+    );
+
+    if (result.affectedRows === 0)
+      return res.status(404).json({ error: "User not found" });
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error(`❌ Error updating ${field}:`, err);
+    res.status(500).json({ error: `Failed to update ${field}` });
+  }
+}
