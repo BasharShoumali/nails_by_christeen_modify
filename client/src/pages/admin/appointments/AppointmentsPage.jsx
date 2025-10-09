@@ -14,19 +14,14 @@ export default function AppointmentsPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [totalAmount, setTotalAmount] = useState(0);
+  const [showCanceled, setShowCanceled] = useState(false); // 👈 NEW toggle
 
-  // 🖼️ Popup for inspo image
   const [previewImg, setPreviewImg] = useState(null);
-
-  // Close modal
   const [showModal, setShowModal] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
-
-  // Cancel modal
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [appointmentToCancel, setAppointmentToCancel] = useState(null);
 
-  // Fetch appointments
   const fetchAppointments = async (date) => {
     try {
       setLoading(true);
@@ -93,9 +88,24 @@ export default function AppointmentsPage() {
     }
   };
 
+  // 👇 Filter appointments (hide canceled by default)
+  const visibleAppointments = showCanceled
+    ? appointments
+    : appointments.filter((a) => a.status !== "canceled");
+
   return (
     <main className={styles.page}>
-      <h1 className={styles.title}>📅 All Appointments</h1>
+      <div className={styles.headerRow}>
+        <h1 className={styles.title}>📅 All Appointments</h1>
+        <button
+          className={`${styles.toggleBtn} ${
+            showCanceled ? styles.activeToggle : ""
+          }`}
+          onClick={() => setShowCanceled((prev) => !prev)}
+        >
+          {showCanceled ? "Hide Canceled ❌" : "View Canceled ❌"}
+        </button>
+      </div>
 
       <div className={styles.controls}>
         <div className={styles.datePickerWrap}>
@@ -136,14 +146,14 @@ export default function AppointmentsPage() {
             </tr>
           </thead>
           <tbody>
-            {appointments.length === 0 ? (
+            {visibleAppointments.length === 0 ? (
               <tr>
                 <td colSpan="7" className={styles.noData}>
                   No appointments found for this date.
                 </td>
               </tr>
             ) : (
-              appointments.map((a) => (
+              visibleAppointments.map((a) => (
                 <tr key={a.id}>
                   <td>{a.slot}</td>
                   <td>{a.username}</td>
@@ -158,7 +168,11 @@ export default function AppointmentsPage() {
                           : styles.statusCanceled
                       }`}
                     >
-                      {a.status}
+                      {a.status === "closed"
+                        ? "✔ Completed"
+                        : a.status === "canceled"
+                        ? "❌ Canceled"
+                        : "Open"}
                     </span>
 
                     {a.status === "closed" && a.amount_paid != null && (
@@ -174,7 +188,7 @@ export default function AppointmentsPage() {
                         src={a.inspo_img}
                         alt="Inspo"
                         className={styles.inspoImg}
-                        onClick={() => setPreviewImg(a.inspo_img)} // 🖱️ open popup
+                        onClick={() => setPreviewImg(a.inspo_img)}
                       />
                     ) : (
                       "-"
@@ -204,7 +218,7 @@ export default function AppointmentsPage() {
                             : styles.statusCanceledIcon
                         }`}
                       >
-                        {a.status === "closed" ? "✔ Closed" : "❌ Canceled"}
+                        {a.status === "closed" ? "✔ Completed" : "❌ Canceled"}
                       </span>
                     )}
                   </td>

@@ -157,7 +157,27 @@ export default function OverridePanel({ schedules, overrides, onChanged }) {
                 >
                   {o.is_open ? "Open" : "Closed"}
                 </td>
-                <td>{o.notes || "—"}</td>
+                <td className={styles.notesCell}>
+                  {/* Desktop view — show normally */}
+                  <span className={styles.noteText}>{o.notes || "—"}</span>
+
+                  {/* Mobile view — button only */}
+                  {o.notes && (
+                    <button
+                      className={styles.viewNoteBtn}
+                      onClick={() =>
+                        showPopup(
+                          "Note",
+                          o.notes || "No additional note",
+                          "info"
+                        )
+                      }
+                    >
+                      View
+                    </button>
+                  )}
+                </td>
+
                 <td>
                   <button
                     className={styles.deleteBtn}

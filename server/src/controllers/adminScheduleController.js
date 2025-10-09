@@ -546,16 +546,17 @@ export async function getAvailableSlots(req, res) {
     );
 
     /* ---------------------------
-       4️⃣ Fetch all appointments of this date
-    --------------------------- */
+   4️⃣ Fetch all active (non-canceled) appointments of this date
+--------------------------- */
     const [appointments] = await conn.query(
       `
-      SELECT a.slot, a.user_id, u.username
-        FROM appointments a
-        JOIN users u ON u.id = a.user_id
-       WHERE a.work_date = ?
-       ORDER BY a.slot
-      `,
+  SELECT a.slot, a.user_id, u.username
+  FROM appointments a
+  JOIN users u ON u.id = a.user_id
+  WHERE a.work_date = ?
+    AND a.status IN ('open', 'closed')
+  ORDER BY a.slot
+`,
       [date]
     );
 

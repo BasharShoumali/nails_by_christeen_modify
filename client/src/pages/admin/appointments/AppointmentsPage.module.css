@@ -399,3 +399,41 @@
 .previewImg:hover {
   transform: scale(1.03);
 }
+.statusDone {
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.statusClosedIcon {
+  color: #1fa37c; /* green */
+}
+
+.statusCanceledIcon {
+  color: #dc3545; /* red */
+}
+.headerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.toggleBtn {
+  background: var(--brand-accent);
+  color: white;
+  border: none;
+  border-radius: var(--radius);
+  padding: 8px 14px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.toggleBtn:hover {
+  background: #b62d38;
+}
+
+.activeToggle {
+  background: #777;
+}

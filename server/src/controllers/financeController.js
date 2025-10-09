@@ -115,8 +115,11 @@ export async function getShoppingList(req, res) {
         // 🧩 Normalize image path
         let imgPath = p.image_url || null;
         if (imgPath) {
-          imgPath = imgPath.replace(/^\/+/, "").replace(/^uploads\//, "");
-          imgPath = `uploads/${imgPath}`;
+          // Normalize slashes and ensure relative path starts with "uploads/"
+          imgPath = imgPath.replace(/\\/g, "/"); // handle Windows
+          if (!imgPath.startsWith("uploads/")) {
+            imgPath = `uploads/${imgPath}`;
+          }
         }
 
         return {

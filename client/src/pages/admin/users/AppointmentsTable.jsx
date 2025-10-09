@@ -88,7 +88,13 @@ export default function AppointmentsTable({
                       </td>
 
                       <td className={styles[a.status]}>
-                        <span className={styles.statusText}>{a.status}</span>
+                        <span className={styles.statusText}>
+                          {a.status === "closed"
+                            ? "✔ Completed"
+                            : a.status === "canceled"
+                            ? "❌ Canceled"
+                            : "Open"}
+                        </span>
                         {a.status === "closed" && (
                           <span className={styles.amountBox}>
                             ₪{Number(a.amount_paid || 0).toFixed(2)}

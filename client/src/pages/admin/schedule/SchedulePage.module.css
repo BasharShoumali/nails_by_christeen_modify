@@ -530,3 +530,50 @@ option:focus {
   border-radius: var(--radius);
   cursor: pointer;
 }
+/* === Hide scrollbar but keep scrollable (mobile-friendly) === */
+.scrollTableWrapper {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+/* Hide for WebKit browsers (Chrome, Safari, iOS Safari) */
+.scrollTableWrapper::-webkit-scrollbar {
+  display: none;
+}
+/* === Notes responsive behavior === */
+.notesCell {
+  position: relative;
+}
+
+/* Hide the 'View' button by default (desktop) */
+.viewNoteBtn {
+  display: none;
+  background: var(--brand-accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  padding: 4px 10px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.viewNoteBtn:hover {
+  background: #b02a37;
+}
+
+/* Keep the text visible on desktop */
+.noteText {
+  display: inline;
+}
+
+/* === iPhone/small screens === */
+@media (max-width: 600px) {
+  /* Hide notes text, show button instead */
+  .noteText {
+    display: none;
+  }
+  .viewNoteBtn {
+    display: inline-block;
+  }
+}
